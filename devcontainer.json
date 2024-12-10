@@ -3,14 +3,10 @@
     "codespaces": {
       "repositories": {
         "platformlabs-co/finops-api": {
-          "permissions": {
-            "issues": "write"
-          }
+          "permissions": "write-all"
         },
         "platformlabs-co/finops-dashboard": {
-            "permissions": {
-              "issues": "write"
-            }
+          "permissions": "write-all"
           }
       }
     }
