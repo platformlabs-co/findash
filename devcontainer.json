@@ -1,0 +1,18 @@
+{
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "platformlabs-co/finops-api": {
+          "permissions": {
+            "issues": "write"
+          }
+        },
+        "platformlabs-co/finops-dashboard": {
+            "permissions": {
+              "issues": "write"
+            }
+          }
+      }
+    }
+  }
+}
