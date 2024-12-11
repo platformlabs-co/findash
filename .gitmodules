@@ -1,6 +1,0 @@
-[submodule "api"]
-	path = api
-	url = git@github.com:platformlabs-co/finops-api.git
-[submodule "dashboard"]
-	path = dashboard
-	url = git@github.com:platformlabs-co/finops-dashboard

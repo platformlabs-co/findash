@@ -8,6 +8,7 @@ services:
       - ./api:/app
     ports:
       - "8000:8000"
+    command: ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000"]
 
   dashboard:
     build:
