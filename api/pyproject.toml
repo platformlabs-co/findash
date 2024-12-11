@@ -1,0 +1,18 @@
+[project]
+name = "finops-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.112.1",
+    "uvicorn[standard]>=0.22.0",
+    "starlette>=0.41.3",
+    "itsdangerous>=2.2.0",
+    "gunicorn>=23.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=2.20.0"
+]
