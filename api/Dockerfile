@@ -27,4 +27,4 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 8000
 # Run the application with live reload
-CMD ["uv","run","gunicorn", "app.main:app", "--bind", "0.0.0.0:8000", "--reload"]
+CMD ["uv","run","gunicorn", "app.main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--reload"]

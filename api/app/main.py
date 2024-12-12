@@ -23,13 +23,15 @@ def setup_app():
 
     app = FastAPI()
     OAuth().register()
-    app.add_middleware(SessionMiddleware, secret_key=env.get('SECRET_KEY'))
+    app.add_middleware(SessionMiddleware, secret_key=env["SECRET_KEY"])
 
-    logger.info("Setting up CORS middleware") 
+    frontend_url = env["REACT_APP_FRONTEND_URL"]
+
+    logger.info(f"Setting up CORS middleware to allow {frontend_url}") 
     # Set up CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[env["REACT_APP_FRONTEND_URL"]],  # Replace with your specific URL
+        allow_origins=[frontend_url, '*'],  # Replace with your specific URL
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

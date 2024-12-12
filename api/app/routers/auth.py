@@ -1,20 +1,9 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 
-from app.helpers.auth import OAuth
-
 router = APIRouter(
     tags=["auth"]
 )
-
-@router.get('/v1/vendor-metrics')
-async def home(request: Request):
-    user = request.session.get('user')
-    if user:
-        return JSONResponse({"data": {
-            "oauth_user": user
-        }})
-    return JSONResponse({"error_message": "You are not logged in."}, status_code=401)
 
 
 @router.get('/')
