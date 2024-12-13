@@ -11,6 +11,7 @@ root.render(
       domain="platformlabs.us.auth0.com"
       clientId="mlUVKKqaYLc0QBITyOXT1ev0a1D5v72l"
       authorizationParams={{
+        audience: 'https://findash.cloudbudget.ai',
         redirect_uri: window.location.origin
       }}
     >

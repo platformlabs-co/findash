@@ -1,7 +1,7 @@
 
 
 const getBackendUrl = (): string => {
-   return process.env.REACT_APP_BACKEND_URL || 'http://localhost:8080';
+   return process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 }
 
 export const CallBackendService = async(path: string, getAccessTokenSilently: () => Promise<string>): Promise<string> => {

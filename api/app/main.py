@@ -9,7 +9,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from authlib.integrations.starlette_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from app.routers import auth
+from app.routers import auth, vendor_metrics
 from app.helpers.auth import OAuth
 
 logger = logging.getLogger(__name__)
@@ -23,9 +23,9 @@ def setup_app():
 
     app = FastAPI()
     OAuth().register()
-    app.add_middleware(SessionMiddleware, secret_key=env["SECRET_KEY"])
+    app.add_middleware(SessionMiddleware, secret_key=env["APP_SECRET_KEY"])
 
-    frontend_url = env["REACT_APP_FRONTEND_URL"]
+    frontend_url = env.get("REACT_APP_FRONTEND_URL", "http://localhost:3000")
 
     logger.info(f"Setting up CORS middleware to allow {frontend_url}") 
     # Set up CORS middleware
@@ -43,3 +43,4 @@ def setup_app():
 app = setup_app()
 
 app.include_router(auth.router)
+app.include_router(vendor_metrics.router)
