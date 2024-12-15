@@ -305,8 +305,8 @@ const VendorMetrics = (props: { vendorName: String }) => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="py-3 text-left">Month</th>
-                        <th className="py-3 text-right">Linear Forecast</th>
                         <th className="py-3 text-right">Best Case</th>
+                        <th className="py-3 text-right">Linear Forecast</th>
                         <th className="py-3 text-right">Worst Case</th>
                       </tr>
                     </thead>
@@ -314,8 +314,8 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       {forecastData.forecast.map((entry: any, index: number) => (
                         <tr key={index} className="border-b border-gray-200">
                           <td className="py-3">{entry.month}</td>
-                          <td className="py-3 text-right">${entry.cost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                           <td className="py-3 text-right text-green-500">${entry.best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="py-3 text-right">${entry.cost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                           <td className="py-3 text-right text-red-500">${entry.worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                       ))}
