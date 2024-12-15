@@ -1,4 +1,5 @@
 import VendorMetrics from "views/admin/default/components/VendorMetrics";
+import DatadogConfig from "views/admin/default/components/DatadogConfig";
 import { Navigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -11,6 +12,7 @@ const Dashboard = () => {
   return (
     <div>
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-1 lg:grid-cols-3 2xl:grid-cols-2 3xl:grid-cols-2">
+        <DatadogConfig />
         <VendorMetrics vendorName="datadog"/>
         <VendorMetrics vendorName="aws"/>
         <VendorMetrics vendorName="circleci"/>
