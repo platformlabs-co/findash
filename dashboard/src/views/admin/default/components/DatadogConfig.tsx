@@ -43,14 +43,14 @@ const DatadogConfig = () => {
             value={appKey}
             onChange={(e) => setAppKey(e.target.value)}
             placeholder="App Key"
-            className="px-3 py-2 border rounded"
+            className="px-3 py-2 border rounded text-gray-800"
           />
           <input
             type="text"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="API Key"
-            className="px-3 py-2 border rounded"
+            className="px-3 py-2 border rounded text-gray-800"
           />
           <button
             type="submit"
