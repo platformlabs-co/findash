@@ -7,7 +7,7 @@ channel = "stable-24_05"
 [[ports]]
 localPort = 3000
 externalPort = 80
-webview = false
+webview = true
 
 [[ports]]
 localPort = 8000
