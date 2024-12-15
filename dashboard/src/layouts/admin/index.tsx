@@ -27,17 +27,7 @@ export default function Admin(props: { [x: string]: any }) {
     }
     return activeRoute;
   };
-  const getActiveNavbar = (routes: RoutesType[]): string | boolean => {
-    let activeNavbar = false;
-    for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-      ) {
-        return routes[i].secondary;
-      }
-    }
-    return activeNavbar;
-  };
+
   const getRoutes = (routes: RoutesType[]): any => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
@@ -50,17 +40,12 @@ export default function Admin(props: { [x: string]: any }) {
     });
   };
 
-  document.documentElement.dir = "ltr";
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full flex-col">
+      <Navbar brandText={currentRoute} {...rest} />
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
-        <main className="mx-[12px] h-full flex-none transition-all">
+        <main className="mx-[12px] h-full flex-grow transition-all">
           <div className="h-full">
-            <Navbar
-              brandText={currentRoute}
-              secondary={getActiveNavbar(routes)}
-              {...rest}
-            />
             <div className="pt-5s mx-auto mb-auto h-full min-h-[84vh] p-2">
               <Routes>
                 {getRoutes(routes)}
