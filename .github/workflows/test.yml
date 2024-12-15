@@ -29,16 +29,16 @@ jobs:
     - name: Install dependencies with UV
       working-directory: ./api
       run: |
-        uv pip install -r pyproject.toml
+        uv --system pip install -r pyproject.toml
 
     - name: Run black
       working-directory: ./api
-      run: uv run black --check .
+      run: uv run  --system black --check . 
 
     - name: Run flake8
       working-directory: ./api
-      run: uv run flake8
+      run: uv run --system flake8
 
     - name: Run tests
       working-directory: ./api
-      run: uv run pytest
+      run: uv run --system pytest
