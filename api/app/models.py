@@ -18,7 +18,6 @@ class APIConfiguration(Base):
     type = Column(String(50), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="api_configurations")
-    metrics = relationship("VendorMetric", back_populates="api_configuration")
 
     __mapper_args__ = {
         'polymorphic_identity': 'api_configuration',
