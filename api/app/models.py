@@ -44,13 +44,16 @@ class DatadogAPIConfiguration(APIConfiguration):
 
     __tablename__ = "datadog_api_configurations"
     id = Column(Integer, ForeignKey("api_configurations.id"), primary_key=True)
-    app_key = Column(String)
-    api_key = Column(String)
-    __mapper_args__ = {"polymorphic_identity": "datadog"}
+    app_key_secret_id = Column(String)
+    api_key_secret_id = Column(String)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "datadog",
+    }
 
     __table_args__ = (
         CheckConstraint(
-            "(app_key IS NOT NULL) OR (api_key IS NOT NULL)",
+            "(app_key_secret_id IS NOT NULL) OR (api_key_secret_id IS NOT NULL)",
             name="check_at_least_one_key",
         ),
     )
