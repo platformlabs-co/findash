@@ -62,7 +62,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
   }
 
   const getLatestHostCount = () => {
-    if (!metrics?.data?.usage || metrics.data.usage.length === 0) {
+    if (!metrics?.data?.usage || !Array.isArray(metrics.data.usage) || metrics.data.usage.length === 0) {
       return 0;
     }
     return metrics.data.usage[metrics.data.usage.length - 1].host_count;
@@ -75,7 +75,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
           {props.vendorName} Metrics
         </h2>
         
-        {metrics ? (
+        {metrics && metrics.data && Array.isArray(metrics.data.usage) ? (
           <div className="space-y-4">
             <div className="bg-navy-700 dark:bg-navy-800 rounded-lg p-4">
               <h3 className="text-lg text-white mb-2">Current Host Count</h3>
