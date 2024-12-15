@@ -218,20 +218,22 @@ const VendorMetrics = (props: { vendorName: String }) => {
                     </tfoot>
                   </table>
                 </div>
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div className="rounded-lg bg-navy-700 p-4">
-                    <p className="text-sm text-gray-400">Total Linear Forecast</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                {forecastData?.sums && (
+                  <div className="mt-6 grid grid-cols-3 gap-4">
+                    <div className="rounded-lg bg-navy-700 p-4">
+                      <p className="text-sm text-gray-400">Total Linear Forecast</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                    <div className="rounded-lg bg-green-900 p-4">
+                      <p className="text-sm text-gray-400">Total Best Case</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                    <div className="rounded-lg bg-red-900 p-4">
+                      <p className="text-sm text-gray-400">Total Worst Case</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg bg-green-900 p-4">
-                    <p className="text-sm text-gray-400">Total Best Case</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <div className="rounded-lg bg-red-900 p-4">
-                    <p className="text-sm text-gray-400">Total Worst Case</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                </div>
+                )}
               </>
             ) : (
               <p className="text-center text-gray-500">No cost data available</p>
@@ -283,20 +285,22 @@ const VendorMetrics = (props: { vendorName: String }) => {
                     </tfoot>
                   </table>
                 </div>
-                <div className="mt-6 grid grid-cols-3 gap-4">
-                  <div className="rounded-lg bg-navy-700 p-4">
-                    <p className="text-sm text-gray-400">Total Linear Forecast</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                {forecastData?.sums && (
+                  <div className="mt-6 grid grid-cols-3 gap-4">
+                    <div className="rounded-lg bg-navy-700 p-4">
+                      <p className="text-sm text-gray-400">Total Linear Forecast</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                    <div className="rounded-lg bg-green-900 p-4">
+                      <p className="text-sm text-gray-400">Total Best Case</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                    <div className="rounded-lg bg-red-900 p-4">
+                      <p className="text-sm text-gray-400">Total Worst Case</p>
+                      <p className="text-xl font-bold text-white">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg bg-green-900 p-4">
-                    <p className="text-sm text-gray-400">Total Best Case</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                  <div className="rounded-lg bg-red-900 p-4">
-                    <p className="text-sm text-gray-400">Total Worst Case</p>
-                    <p className="text-xl font-bold text-white">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  </div>
-                </div>
+                )}
               </>
             ) : (
               <div className="flex items-center justify-center h-64">
