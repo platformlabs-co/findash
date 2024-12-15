@@ -184,8 +184,29 @@ const VendorMetrics = (props: { vendorName: String }) => {
             {activeTab === 'forecast' && (
               <button
                 onClick={async () => {
-                  const token = await getAccessTokenSilently();
-                  window.location.href = `/v1/vendors-forecast/${props.vendorName}?format=csv&token=${token}`;
+                  try {
+                    const token = await getAccessTokenSilently();
+                    const response = await fetch(`/v1/vendors-forecast/${props.vendorName}?format=csv`, {
+                      headers: {
+                        'Authorization': `Bearer ${token}`
+                      }
+                    });
+                    
+                    if (!response.ok) throw new Error('Export failed');
+                    
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${props.vendorName}_forecast.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                  } catch (error) {
+                    console.error('Export failed:', error);
+                    // You could add a toast notification here
+                  }
                 }}
                 className="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
               >
