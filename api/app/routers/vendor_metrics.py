@@ -79,30 +79,67 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
         user = db.query(User).filter(User.sub == auth_user["sub"]).first()
         if not user:
             logger.error(f"User not found for sub: {auth_user['sub']}")
-            raise HTTPException(status_code=404, detail="User not found")
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "error": "User not found",
+                    "message": "Unable to find user record",
+                    "code": "USER_NOT_FOUND"
+                }
+            )
 
         vendor_name = vendor_name.lower()
+        if vendor_name != "datadog":
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "error": "Invalid vendor",
+                    "message": f"Vendor type '{vendor_name}' not implemented",
+                    "code": "INVALID_VENDOR"
+                }
+            )
 
-        if vendor_name == "datadog":
-            logger.info("Processing Datadog metrics request")
-            datadog_config = db.query(DatadogAPIConfiguration).filter(
-                DatadogAPIConfiguration.user_id == user.id
-            ).first()
-            if not datadog_config:
-                raise HTTPException(status_code=404, detail="Datadog API configuration not found for this user")
-                
-            fetcher = DatadogMetricsFetcher(api_key=datadog_config.api_key, app_key=datadog_config.app_key)
-            logger.debug("Fetching Datadog usage data")
-            metrics = fetcher.get_usage_data()
-            logger.info("Successfully retrieved Datadog metrics")
-            return JSONResponse({"data": metrics})
-        else:
-            raise HTTPException(status_code=400, detail=f"Vendor type '{vendor_name}' not implemented")
+        logger.info("Processing Datadog metrics request")
+        datadog_config = db.query(DatadogAPIConfiguration).filter(
+            DatadogAPIConfiguration.user_id == user.id
+        ).first()
+        
+        if not datadog_config:
+            return JSONResponse(
+                status_code=404,
+                content={
+                    "error": "Configuration not found",
+                    "message": "Datadog API configuration not found for this user",
+                    "code": "CONFIG_NOT_FOUND"
+                }
+            )
+            
+        fetcher = DatadogMetricsFetcher(api_key=datadog_config.api_key, app_key=datadog_config.app_key)
+        logger.debug("Fetching Datadog usage data")
+        metrics = fetcher.get_usage_data()
+        
+        if isinstance(metrics, JSONResponse):
+            return metrics
+            
+        logger.info("Successfully retrieved Datadog metrics")
+        return JSONResponse(
+            status_code=200,
+            content={
+                "data": metrics,
+                "message": "Successfully retrieved metrics"
+            }
+        )
 
     except Exception as e:
         logger.exception(f"Error fetching vendor metrics: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "Internal server error",
+                "message": str(e),
+                "code": "INTERNAL_ERROR"
+            }
+        )
 
 
 @router.post("/v1/datadog-configuration")
