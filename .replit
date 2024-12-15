@@ -1,6 +1,6 @@
 
 modules = ["nodejs-20:v8-20230920-bd784b9", "python-3.12:v25-20230920-d4ad2e4"]
-run = "cd api && echo '[API] Installing dependencies...' && uv pip install -r pyproject.toml && echo '[API] Starting server...' && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload & cd ../dashboard && echo '[DASHBOARD] Installing dependencies...' && npm install && echo '[DASHBOARD] Starting server...' && npm start"
+run = "(cd api && echo '[API] Installing dependencies...' && uv pip install -r pyproject.toml && echo '[API] Starting server...' && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload > ../api.log 2>&1) & (cd dashboard && echo '[DASHBOARD] Installing dependencies...' && npm install && echo '[DASHBOARD] Starting server...' && npm start > ../dashboard.log 2>&1) & tail -f api.log dashboard.log"
 
 [nix]
 channel = "stable-24_05"
