@@ -57,5 +57,10 @@ class ForecastService:
                 'total_forecast': round(total_forecast, 2),
                 'total_best_case': round(total_best_case, 2),
                 'total_worst_case': round(total_worst_case, 2)
+            },
+            'growth_rates': {
+                'trend_based': round(avg_growth * 100, 2),
+                'best_case': round(best_case_growth * 100, 2),
+                'worst_case': round(worst_case_growth * 100, 2)
             }
         }

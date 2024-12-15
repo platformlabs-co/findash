@@ -244,15 +244,24 @@ const VendorMetrics = (props: { vendorName: String }) => {
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="p-4 bg-navy-700 rounded-xl">
                     <p className="text-sm text-gray-400">Best Case Total</p>
-                    <p className="text-xl text-green-500">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-xl text-green-500">
+                      ${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="block text-sm text-gray-400 mt-1">MoM Growth: {forecastData.growth_rates.best_case}%</span>
+                    </p>
                   </div>
                   <div className="p-4 bg-navy-700 rounded-xl">
-                    <p className="text-sm text-gray-400">Linear Forecast Total</p>
-                    <p className="text-xl text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-sm text-gray-400">Trend-based Forecast Total</p>
+                    <p className="text-xl text-white">
+                      ${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="block text-sm text-gray-400 mt-1">MoM Growth: {forecastData.growth_rates.trend_based}%</span>
+                    </p>
                   </div>
                   <div className="p-4 bg-navy-700 rounded-xl">
                     <p className="text-sm text-gray-400">Worst Case Total</p>
-                    <p className="text-xl text-red-500">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <p className="text-xl text-red-500">
+                      ${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <span className="block text-sm text-gray-400 mt-1">MoM Growth: {forecastData.growth_rates.worst_case}%</span>
+                    </p>
                   </div>
                 </div>
                 <div className="overflow-x-auto mt-6">
@@ -261,7 +270,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       <tr className="border-b border-gray-200">
                         <th className="py-3 text-left">Month</th>
                         <th className="py-3 text-right">Best Case</th>
-                        <th className="py-3 text-right">Linear Forecast</th>
+                        <th className="py-3 text-right">Trend-based Forecast</th>
                         <th className="py-3 text-right">Worst Case</th>
                       </tr>
                     </thead>
