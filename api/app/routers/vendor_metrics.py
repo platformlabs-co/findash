@@ -29,7 +29,7 @@ class DatadogMetricsFetcher:
         
         try:
             response = requests.get(
-                f"{self.base_url}/usage/hosts?start_hr={start_date}&end_hr={end_date}",
+                f"{self.base_url}/usage/billable-summary?start_month={start_date}&end_month={end_date}",
                 headers=headers
             )
             
