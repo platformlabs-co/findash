@@ -239,7 +239,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
               <div className="flex items-center justify-center h-64">
                 <p className="text-gray-500">Loading forecast data...</p>
               </div>
-            ) : forecastData?.forecastData && Array.isArray(forecastData.forecastData) && forecastData.forecastData.length > 0 ? (
+            ) : forecastData?.forecast && Array.isArray(forecastData.forecast) && forecastData.forecast.length > 0 ? (
               <>
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="p-4 bg-navy-700 rounded-xl">
@@ -275,7 +275,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {forecastData.forecastData.map((entry: any, index: number) => (
+                      {forecastData.forecast.map((entry: any, index: number) => (
                         <tr key={index} className="border-b border-gray-200">
                           <td className="py-3">{entry.month}</td>
                           <td className="py-3 text-right text-green-500">${entry.best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
