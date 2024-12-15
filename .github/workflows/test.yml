@@ -23,8 +23,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential libpq-dev
         curl -sSL https://github.com/astral-sh/uv/releases/download/v0.5.4/uv-0.5.4-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
 
     - name: Move to API directory
