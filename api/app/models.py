@@ -53,9 +53,3 @@ class DatadogAPIConfiguration(APIConfiguration):
             name='check_at_least_one_key'
         ),
     )
-class Vendor(Base):
-    __tablename__ = "vendors"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True)
-    type = Column(String)
