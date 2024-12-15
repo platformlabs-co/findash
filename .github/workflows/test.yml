@@ -1,3 +1,4 @@
+
 name: Run Tests and Lint
 
 on:
@@ -21,9 +22,9 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install dependencies
+    - name: Install uv
       run: |
-        curl -sSL https://github.com/astral-sh/uv/releases/download/v0.5.4/uv-0.5.4-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+        curl -LsSf https://astral.sh/uv/install.sh | sh
 
     - name: Move to API directory
       run: cd api
