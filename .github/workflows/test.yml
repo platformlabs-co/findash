@@ -35,17 +35,14 @@ jobs:
     - name: Run black
       working-directory: ./api
       run: |
-        uv pip install --system black
         black --check .
 
     - name: Run flake8
       working-directory: ./api
       run: |
-        uv pip install --system flake8
         flake8
 
     - name: Run tests
       working-directory: ./api
       run: |
-        uv pip install --system pytest
         pytest
