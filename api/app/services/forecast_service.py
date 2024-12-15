@@ -21,8 +21,8 @@ class ForecastService:
         avg_growth = total_growth / growth_points if growth_points > 0 else 0
         
         # Define growth rates for different scenarios
-        best_case_growth = avg_growth * 1.5  # 50% better growth
-        worst_case_growth = avg_growth * 0.5  # 50% worse growth
+        best_case_growth = avg_growth * 0.5  # 50% less growth (cheaper)
+        worst_case_growth = avg_growth * 1.5  # 50% more growth (more expensive)
         
         # Get the last date from historical data
         last_date = datetime.strptime(historical_data[-1]['month'], "%m-%Y")
