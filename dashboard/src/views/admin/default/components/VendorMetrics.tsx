@@ -40,7 +40,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
     };
     
     fetchData();
-  }, [props.vendorName]);
+  }, [props.vendorName, getAccessTokenSilently]);
 
   const getBarChartData = () => {
     if (!metrics?.data) return [];
@@ -86,7 +86,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
             fontSize: "14px",
             fontWeight: "500"
           },
-          formatter: function (value) {
+          formatter: function (value: number) {
             return "$" + value.toFixed(2);
           }
         }

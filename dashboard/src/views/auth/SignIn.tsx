@@ -57,7 +57,7 @@ export default function SignIn() {
   );
 }
 
-const FeatureCard = ({ icon, title, description }) => (
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
   <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-navy-800">
     <div className="mb-4 inline-flex rounded-lg bg-brand-500 p-3 text-white dark:bg-brand-400">
       {icon}
