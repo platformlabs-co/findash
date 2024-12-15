@@ -27,18 +27,42 @@ class DatadogMetricsFetcher:
             "DD-APPLICATION-KEY": self.app_key,
         }
         
-        response = requests.get(
-            f"{self.base_url}/usage/hosts?start_hr={start_date}&end_hr={end_date}",
-            headers=headers
-        )
-        
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Failed to fetch Datadog metrics: {response.text}"
+        try:
+            response = requests.get(
+                f"{self.base_url}/usage/hosts?start_hr={start_date}&end_hr={end_date}",
+                headers=headers
             )
             
-        return response.json()
+            if response.status_code == 403:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "error": "Authorization failed",
+                        "message": "Invalid API key or application key",
+                        "details": response.text
+                    }
+                )
+            elif response.status_code != 200:
+                return JSONResponse(
+                    status_code=response.status_code,
+                    content={
+                        "error": "Failed to fetch Datadog metrics",
+                        "message": response.text,
+                        "status": response.status_code
+                    }
+                )
+                
+            return response.json()
+            
+        except requests.RequestException as e:
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "error": "Request failed",
+                    "message": str(e),
+                    "type": type(e).__name__
+                }
+            )
 
 logger = logging.getLogger(__name__)
 
@@ -58,18 +82,15 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
             raise HTTPException(status_code=404, detail="User not found")
 
         vendor_name = vendor_name.lower()
-        logger.debug(f"Looking up configuration for vendor: {vendor_name}, user_id: {user.id}")
-        config = db.query(APIConfiguration).filter(
-            APIConfiguration.user_id == user.id,
-            APIConfiguration.type == vendor_name
-        ).first()
-        
-        if not config:
-            raise HTTPException(status_code=404, detail=f"{vendor_name} configuration not found for this user")
 
         if vendor_name == "datadog":
             logger.info("Processing Datadog metrics request")
-            datadog_config = db.query(DatadogAPIConfiguration).get(config.id)
+            datadog_config = db.query(DatadogAPIConfiguration).filter(
+                DatadogAPIConfiguration.user_id == user.id
+            ).first()
+            if not datadog_config:
+                raise HTTPException(status_code=404, detail="Datadog API configuration not found for this user")
+                
             fetcher = DatadogMetricsFetcher(api_key=datadog_config.api_key, app_key=datadog_config.app_key)
             logger.debug("Fetching Datadog usage data")
             metrics = fetcher.get_usage_data()
@@ -118,19 +139,3 @@ async def create_datadog_configuration(
             "id": api_config.id
         }
     })
-
-from fastapi.responses import JSONResponse
-
-from app.helpers.auth import get_authenticated_user
-
-logger = logging.getLogger(__name__)
-
-
-router = APIRouter(tags=["cloud-cost-data"])
-
-
-@router.get("/v1/vendors-metrics") #This endpoint is redundant and should likely be removed or repurposed
-async def home(request: Request, auth_user: dict = Depends(get_authenticated_user)):
-    return JSONResponse(
-        {"data": {"message": "Welcome to the FinDash API", "user": auth_user}}
-    )
