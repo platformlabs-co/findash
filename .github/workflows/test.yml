@@ -29,7 +29,7 @@ jobs:
     - name: Install dependencies with UV
       working-directory: ./api
       run: |
-        uv --system pip install -r pyproject.toml
+        uv pip install .
 
     - name: Run black
       working-directory: ./api
