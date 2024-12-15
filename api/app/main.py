@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from app.helpers.database import init_db
 from starlette.middleware.sessions import SessionMiddleware

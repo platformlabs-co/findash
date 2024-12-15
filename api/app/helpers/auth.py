@@ -1,4 +1,3 @@
-
 from fastapi.security import HTTPBearer
 import jwt
 import os
@@ -19,16 +18,14 @@ token_auth_scheme = HTTPBearer()
 
 def validate_jwt(jwt_access_token):
     config = Config()
-    
+
     auth0_issuer_url: str = f"https://{config.Auth0Domain}/"
     auth0_audience: str = config.Auth0Audience
     jwks_uri: str = f"{auth0_issuer_url}.well-known/jwks.json"
-    
+
     logger.info(f"Getting JWT from the server {jwks_uri}")
     jwks_client = jwt.PyJWKClient(jwks_uri)
-    jwt_signing_key = jwks_client.get_signing_key_from_jwt(
-        jwt_access_token
-    ).key
+    jwt_signing_key = jwks_client.get_signing_key_from_jwt(jwt_access_token).key
     payload = jwt.decode(
         jwt_access_token,
         jwt_signing_key,
@@ -40,14 +37,14 @@ def validate_jwt(jwt_access_token):
 
 
 async def get_authenticated_user(
-    request: Request, 
+    request: Request,
     token: HTTPBearer = Depends(token_auth_scheme),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     try:
         payload = validate_jwt(token.credentials)
         sub = payload["sub"]
-        
+
         # Check if user exists, create if not
         db_user = db.query(User).filter(User.sub == sub).first()
         if not db_user:
@@ -55,7 +52,7 @@ async def get_authenticated_user(
             db.add(db_user)
             db.commit()
             db.refresh(db_user)
-        
+
         user = {
             "sub": sub,
             "token": token.credentials,
