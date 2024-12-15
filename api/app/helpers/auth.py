@@ -8,38 +8,35 @@ from sqlalchemy.orm import Session
 import logging
 from app.models import User
 from app.helpers.database import get_db
+from app.helpers.config import Config
 
 logger = logging.getLogger(__name__)
 
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
-API_AUDIENCE = os.getenv("API_AUDIENCE", "")
 ALGORITHMS = ["RS256"]
 
 token_auth_scheme = HTTPBearer()
 
 
-class JsonWebToken:
-    """Perform JSON Web Token (JWT) validation using PyJWT"""
-
-    jwt_access_token: str
-    auth0_issuer_url: str = f"https://{AUTH0_DOMAIN}/"
-    auth0_audience: str = API_AUDIENCE
-    algorithm: str = "RS256"
+def validate_jwt(jwt_access_token):
+    config = Config()
+    
+    auth0_issuer_url: str = f"https://{config.Auth0Domain}/"
+    auth0_audience: str = config.Auth0Audience
     jwks_uri: str = f"{auth0_issuer_url}.well-known/jwks.json"
-
-    def validate(self):
-        jwks_client = jwt.PyJWKClient(self.jwks_uri)
-        jwt_signing_key = jwks_client.get_signing_key_from_jwt(
-            self.jwt_access_token
-        ).key
-        payload = jwt.decode(
-            self.jwt_access_token,
-            jwt_signing_key,
-            algorithms=self.algorithm,
-            audience=self.auth0_audience,
-            issuer=self.auth0_issuer_url,
-        )
-        return payload
+    
+    logger.info(f"Getting JWT from the server {jwks_uri}")
+    jwks_client = jwt.PyJWKClient(jwks_uri)
+    jwt_signing_key = jwks_client.get_signing_key_from_jwt(
+        jwt_access_token
+    ).key
+    payload = jwt.decode(
+        jwt_access_token,
+        jwt_signing_key,
+        algorithms=ALGORITHMS,
+        audience=auth0_audience,
+        issuer=auth0_issuer_url,
+    )
+    return payload
 
 
 async def get_authenticated_user(
@@ -47,10 +44,8 @@ async def get_authenticated_user(
     token: HTTPBearer = Depends(token_auth_scheme),
     db: Session = Depends(get_db)
 ):
-    jwt_token = JsonWebToken()
-    jwt_token.jwt_access_token = token.credentials
     try:
-        payload = jwt_token.validate()
+        payload = validate_jwt(token.credentials)
         sub = payload["sub"]
         
         # Check if user exists, create if not
