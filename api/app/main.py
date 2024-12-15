@@ -1,37 +1,28 @@
-from os import environ as env
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-from fastapi import Depends, FastAPI, Request
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from authlib.integrations.starlette_client import OAuth
-from dotenv import find_dotenv, load_dotenv
-from app.routers import auth, vendor_metrics
-from app.helpers.auth import OAuth
+from app.routers import vendor_metrics
+from app.helpers.config import Config
+
 
 logger = logging.getLogger(__name__)
 
 
 def setup_app():
-    ENV_FILE = find_dotenv()
-    if ENV_FILE:
-        load_dotenv(ENV_FILE)
-
 
     app = FastAPI()
-    OAuth().register()
-    app.add_middleware(SessionMiddleware, secret_key=env["APP_SECRET_KEY"])
 
-    frontend_url = env.get("REACT_APP_FRONTEND_URL", "http://localhost:3000")
+    config = Config()
+    app.add_middleware(SessionMiddleware, secret_key=config.AppSecretKey)
 
-    logger.info(f"Setting up CORS middleware to allow {frontend_url}") 
     # Set up CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[frontend_url, '*'],  # Replace with your specific URL
+        allow_origins=['*'],  # Replace with your specific URL
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -42,5 +33,4 @@ def setup_app():
 
 app = setup_app()
 
-app.include_router(auth.router)
 app.include_router(vendor_metrics.router)
