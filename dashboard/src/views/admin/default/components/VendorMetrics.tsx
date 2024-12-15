@@ -180,35 +180,43 @@ const VendorMetrics = (props: { vendorName: String }) => {
           </div>
         </div>
         
-        {activeTab === 'actual' && metrics?.data && metrics.data.length > 0 ? (
+        {activeTab === 'actual' && (
           <>
-            <div className="h-[300px] w-full">
-              <BarChart
-                chartData={getBarChartData()}
-                chartOptions={getBarChartOptions()}
-              />
-            </div>
-            <div className="overflow-x-auto mt-6">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="py-3 text-left">Month</th>
-                    <th className="py-3 text-right">Cost</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {metrics.data.map((entry, index) => (
-                    <tr key={index} className="border-b border-gray-200">
-                      <td className="py-3">{entry.month}</td>
-                      <td className="py-3 text-right">${entry.cost.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Loading cost data...</p>
+              </div>
+            ) : metrics?.data && metrics.data.length > 0 ? (
+              <>
+                <div className="h-[300px] w-full">
+                  <BarChart
+                    chartData={getBarChartData()}
+                    chartOptions={getBarChartOptions()}
+                  />
+                </div>
+                <div className="overflow-x-auto mt-6">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="py-3 text-left">Month</th>
+                        <th className="py-3 text-right">Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {metrics.data.map((entry, index) => (
+                        <tr key={index} className="border-b border-gray-200">
+                          <td className="py-3">{entry.month}</td>
+                          <td className="py-3 text-right">${entry.cost.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : (
+              <p className="text-center text-gray-500">No cost data available</p>
+            )}
           </>
-        ) : (
-          <p className="text-center text-gray-500">No cost data available</p>
         )}
         
         {activeTab === 'forecast' && (
