@@ -1,6 +1,8 @@
 import logging
-from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Query
+from fastapi.responses import JSONResponse, StreamingResponse
+import io
+import csv
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models import DatadogAPIConfiguration, User
@@ -15,6 +17,7 @@ router = APIRouter(tags=["cloud-cost-forecast"])
 @router.get("/v1/vendors-forecast/{vendor_name}")
 async def get_vendor_forecast(
     vendor_name: str,
+    format: str = Query(None, description="Response format (csv or json)"),
     auth_user: dict = Depends(get_authenticated_user),
     db: Session = Depends(get_db)
 ):
@@ -65,6 +68,31 @@ async def get_vendor_forecast(
         
         # Generate forecast using the ForecastService
         forecast_data = ForecastService.predict_mom_growth(historical_data["data"])
+            
+        if format == 'csv':
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # Write headers
+            writer.writerow(['Month', 'Best Case', 'Trend-based Forecast', 'Worst Case'])
+            
+            # Write forecast data
+            for entry in forecast_data['forecast_data']:
+                writer.writerow([
+                    entry['month'],
+                    entry['best_case'],
+                    entry['cost'],
+                    entry['worst_case']
+                ])
+            
+            output.seek(0)
+            return StreamingResponse(
+                iter([output.getvalue()]),
+                media_type="text/csv",
+                headers={
+                    "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv"
+                }
+            )
             
         return JSONResponse(
             status_code=200,

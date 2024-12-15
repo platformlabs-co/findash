@@ -181,6 +181,17 @@ const VendorMetrics = (props: { vendorName: String }) => {
             >
               Forecast
             </button>
+            {activeTab === 'forecast' && (
+              <button
+                onClick={async () => {
+                  const token = await getAccessTokenSilently();
+                  window.location.href = `/v1/vendors-forecast/${props.vendorName}?format=csv&token=${token}`;
+                }}
+                className="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
+              >
+                Export CSV
+              </button>
+            )}
           </div>
         </div>
         
