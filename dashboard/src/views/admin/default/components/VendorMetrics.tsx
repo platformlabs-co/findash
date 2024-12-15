@@ -206,7 +206,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       {metrics.data.map((entry, index) => (
                         <tr key={index} className="border-b border-gray-200">
                           <td className="py-3">{entry.month}</td>
-                          <td className="py-3 text-right">${entry.cost.toFixed(2)}</td>
+                          <td className="py-3 text-right">${entry.cost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -234,56 +234,79 @@ const VendorMetrics = (props: { vendorName: String }) => {
                 <p className="text-gray-500">Loading forecast data...</p>
               </div>
             ) : forecastData?.forecast && Array.isArray(forecastData.forecast) && forecastData.forecast.length > 0 ? (
-              <div className="h-[300px] w-full">
-                <BarChart
-                  chartData={[
-                    {
-                      name: "Forecast",
-                      data: forecastData.forecast.map((item: any) => item.cost),
-                      color: "#4318FF"
-                    }
-                  ]}
-                  chartOptions={{
-                    chart: {
-                      toolbar: { show: false },
-                    },
-                    tooltip: {
-                      style: {
-                        fontSize: "12px",
-                        fontFamily: undefined,
-                        backgroundColor: "#000000"
+              <>
+                <div className="h-[300px] w-full">
+                  <BarChart
+                    chartData={[
+                      {
+                        name: "Forecast",
+                        data: forecastData.forecast.map((item: any) => item.cost),
+                        color: "#4318FF"
+                      }
+                    ]}
+                    chartOptions={{
+                      chart: {
+                        toolbar: { show: false },
                       },
-                      theme: "dark"
-                    },
-                    xaxis: {
-                      categories: forecastData.forecast.map((item: any) => item.month),
-                      show: true,
-                      labels: {
-                        show: true,
+                      tooltip: {
                         style: {
-                          colors: "#A3AED0",
-                          fontSize: "14px",
-                          fontWeight: "500"
-                        }
-                      }
-                    },
-                    yaxis: {
-                      show: true,
-                      labels: {
-                        show: true,
-                        style: {
-                          colors: "#A3AED0",
-                          fontSize: "14px",
-                          fontWeight: "500"
+                          fontSize: "12px",
+                          fontFamily: undefined,
+                          backgroundColor: "#000000"
                         },
-                        formatter: function (value: number) {
-                          return "$" + value.toFixed(2);
+                        theme: "dark",
+                        y: {
+                          formatter: (value: number) => `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        }
+                      },
+                      xaxis: {
+                        categories: forecastData.forecast.map((item: any) => item.month),
+                        show: true,
+                        labels: {
+                          show: true,
+                          style: {
+                            colors: "#A3AED0",
+                            fontSize: "14px",
+                            fontWeight: "500"
+                          }
+                        }
+                      },
+                      yaxis: {
+                        show: true,
+                        labels: {
+                          show: true,
+                          style: {
+                            colors: "#A3AED0",
+                            fontSize: "14px",
+                            fontWeight: "500"
+                          },
+                          formatter: function (value: number) {
+                            return "$" + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                          }
                         }
                       }
-                    }
-                  }}
-                />
-              </div>
+                    }}
+                  />
+                </div>
+                <div className="overflow-x-auto mt-6">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="py-3 text-left">Month</th>
+                        <th className="py-3 text-right">Forecasted Cost</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {forecastData.forecast.map((entry: any, index: number) => (
+                        <tr key={index} className="border-b border-gray-200">
+                          <td className="py-3">{entry.month}</td>
+                          <td className="py-3 text-right">${entry.cost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="flex items-center justify-center h-64">
                 <p className="text-gray-500">No forecast data available</p>
