@@ -1,7 +1,10 @@
+"""DataDog service module for handling DataDog API interactions."""
+
 import logging
 from datetime import datetime, timedelta
-import requests
 from typing import Dict, Any
+
+import requests
 from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
