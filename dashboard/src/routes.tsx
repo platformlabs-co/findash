@@ -21,13 +21,6 @@ const routes = [
     component: <Configuration />,
   },
   {
-    name: "Vendors",
-    layout: "/admin",
-    path: "vendors",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <Vendors />,
-  },
-  {
     name: "Sign In",
     layout: "/auth",
     path: "sign-in",
