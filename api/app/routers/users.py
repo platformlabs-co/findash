@@ -50,3 +50,25 @@ async def create_datadog_configuration(
             "id": api_config.id
         }
     })
+
+@router.get("/v1/users/me/api-configurations")
+async def list_api_configurations(
+    auth_user: dict = Depends(get_authenticated_user),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.sub == auth_user["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    configurations = db.query(DatadogAPIConfiguration).filter(
+        DatadogAPIConfiguration.user_id == user.id
+    ).all()
+    
+    return JSONResponse({
+        "data": [{
+            "id": config.id,
+            "type": "datadog",
+            "app_key": config.app_key,
+            "api_key": config.api_key
+        } for config in configurations]
+    })
