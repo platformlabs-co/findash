@@ -229,26 +229,54 @@ const VendorMetrics = (props: { vendorName: String }) => {
               <div className="flex items-center justify-center h-64">
                 <p className="text-red-500">{error}</p>
               </div>
-            ) : forecastData?.data && forecastData.data.length > 0 ? (
+            ) : forecastData?.forecast && forecastData.forecast.length > 0 ? (
               <div className="h-[300px] w-full">
                 <BarChart
                   chartData={[
                     {
                       name: "Forecast",
-                      data: forecastData.data.map((item: any) => item.predicted_cost)
+                      data: forecastData.forecast.map((item: any) => item.cost),
+                      color: "#4318FF"
                     }
                   ]}
                   chartOptions={{
+                    chart: {
+                      toolbar: { show: false },
+                    },
+                    tooltip: {
+                      style: {
+                        fontSize: "12px",
+                        fontFamily: undefined,
+                        backgroundColor: "#000000"
+                      },
+                      theme: "dark"
+                    },
                     xaxis: {
-                      categories: forecastData.data.map((item: any) => item.month),
+                      categories: forecastData.forecast.map((item: any) => item.month),
+                      show: true,
                       labels: {
+                        show: true,
                         style: {
                           colors: "#A3AED0",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                        },
-                      },
+                          fontSize: "14px",
+                          fontWeight: "500"
+                        }
+                      }
                     },
+                    yaxis: {
+                      show: true,
+                      labels: {
+                        show: true,
+                        style: {
+                          colors: "#A3AED0",
+                          fontSize: "14px",
+                          fontWeight: "500"
+                        },
+                        formatter: function (value: number) {
+                          return "$" + value.toFixed(2);
+                        }
+                      }
+                    }
                   }}
                 />
               </div>
