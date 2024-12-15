@@ -214,12 +214,6 @@ const VendorMetrics = (props: { vendorName: String }) => {
                         </tr>
                       ))}
                     </tbody>
-                    <tfoot>
-                      <tr className="border-t-2 border-gray-300">
-                        <td className="py-3 font-bold">Total</td>
-                        <td className="py-3 text-right font-bold">${metrics.total_sum?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      </tr>
-                    </tfoot>
                   </table>
                 </div>
                 {forecastData?.sums && (
@@ -281,12 +275,6 @@ const VendorMetrics = (props: { vendorName: String }) => {
                         </tr>
                       ))}
                     </tbody>
-                    <tfoot>
-                      <tr className="border-t-2 border-gray-300">
-                        <td className="py-3 font-bold">Total</td>
-                        <td className="py-3 text-right font-bold">${metrics.total_sum?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                      </tr>
-                    </tfoot>
                   </table>
                 </div>
                 {forecastData?.sums && (
