@@ -14,7 +14,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const backend_data = await CallBackendService(`/v1/vendors-metrics/${props.vendorName}`, getAccessTokenSilently);
+        const backend_data = await CallBackendService(`/v1/vendors-metrics/${props.vendorName.toLowerCase()}`, getAccessTokenSilently);
         console.log(backend_data);
         setData(backend_data);
       } catch (error) {	

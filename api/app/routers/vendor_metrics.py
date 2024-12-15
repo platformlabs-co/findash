@@ -48,22 +48,22 @@ class DatadogAPIConfigCreate(BaseModel):
 
 router = APIRouter(tags=["cloud-cost-data"])
 
-@router.get("/v1/vendors-metrics/{vendor_id}") # Added vendor_id path parameter
-async def get_vendor_metrics(vendor_id: int, request: Request, auth_user: dict = Depends(get_authenticated_user), db: Session = Depends(get_db)):
+@router.get("/v1/vendors-metrics/{vendor_name}")
+async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict = Depends(get_authenticated_user), db: Session = Depends(get_db)):
     try:
-        vendor = db.query(VendorMetric).filter(VendorMetric.id == vendor_id).first()
-        if not vendor:
-            raise HTTPException(status_code=404, detail="Vendor not found")
+        user = db.query(User).filter(User.sub == auth_user["sub"]).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
 
-        if vendor.type == "datadog":
-            config = db.query(DatadogAPIConfiguration).filter(DatadogAPIConfiguration.user_id == auth_user["user_id"]).first()
+        if vendor_name == "datadog":
+            config = db.query(DatadogAPIConfiguration).filter(DatadogAPIConfiguration.user_id == user.id).first()
             if not config:
                 raise HTTPException(status_code=404, detail="Datadog configuration not found for this user")
             fetcher = DatadogMetricsFetcher(api_key=config.api_key, app_key=config.app_key)
             metrics = fetcher.get_usage_data()
             return JSONResponse({"data": metrics})
         else:
-            raise HTTPException(status_code=400, detail=f"Vendor type '{vendor.type}' not implemented")
+            raise HTTPException(status_code=400, detail=f"Vendor type '{vendor_name}' not implemented")
 
     except Exception as e:
         logger.exception(f"Error fetching vendor metrics: {e}")
