@@ -34,6 +34,11 @@ export default function SignIn() {
           title="Cost Forecasting"
           description="Predict future cloud costs using advanced analytics"
         />
+        <FeatureCard 
+          icon={<MdBarChart className="h-6 w-6"/>}
+          title="AI-Powered Insights"
+          description="Machine learning models analyze spending patterns to provide accurate forecasts and optimization suggestions"
+        />
       </div>
 
       {/* Sign In Button */}
