@@ -1,4 +1,3 @@
-
 name: Run Tests and Lint
 
 on:
@@ -24,6 +23,9 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v1
+      id: uv
+      with:
+        add-to-path: true
 
     - name: Install dependencies with UV
       working-directory: ./api
@@ -33,17 +35,17 @@ jobs:
     - name: Run black
       working-directory: ./api
       run: |
-        $HOME/.cargo/bin/uv pip install --system black
+        uv pip install --system black
         black --check .
 
     - name: Run flake8
       working-directory: ./api
       run: |
-        $HOME/.cargo/bin/uv pip install --system flake8
+        uv pip install --system flake8
         flake8
 
     - name: Run tests
       working-directory: ./api
       run: |
-        $HOME/.cargo/bin/uv pip install --system pytest
+        uv pip install --system pytest
         pytest
