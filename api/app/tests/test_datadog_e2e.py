@@ -61,7 +61,7 @@ def test_datadog_configuration_flow(test_client):
     
     # Fetch vendor metrics using the configuration
     response = test_client.get("/v1/vendors-metrics/datadog")
-    assert response.status_code in [200, 403]  # 403 is acceptable as keys are not real
+    assert response.status_code in [200]  # 403 is acceptable as keys are not real
     
     if response.status_code == 403:
         assert "error" in response.json()
