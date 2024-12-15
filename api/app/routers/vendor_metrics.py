@@ -19,8 +19,8 @@ class DatadogMetricsFetcher:
 
     def get_usage_data(self) -> Dict[str, Any]:
         now = datetime.utcnow()
-        start_date = (now - timedelta(days=365)).strftime("%Y-%m-%d")
-        end_date = now.strftime("%Y-%m-%d")
+        start_date = (now - timedelta(days=365)).strftime("%Y-%m")
+        end_date = now.strftime("%Y-%m")
         
         headers = {
             "DD-API-KEY": self.api_key,
@@ -38,6 +38,18 @@ class DatadogMetricsFetcher:
             )
             
             logger.info(f"Datadog API Response - Status: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                monthly_costs = []
+                if 'data' in data and isinstance(data['data'], list):
+                    for entry in data['data']:
+                        date = datetime.strptime(entry['attributes']['date'], "%Y-%m-%d")
+                        monthly_costs.append({
+                            'month': date.strftime("%m-%Y"),
+                            'cost': round(float(entry['attributes']['total_cost']), 2)
+                        })
+                return {"data": monthly_costs}
             logger.info(f"Datadog API Response - Body: {response.text}")
             
             if response.status_code == 403:
