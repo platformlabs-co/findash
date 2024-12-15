@@ -13,12 +13,9 @@ const Dashboard = () => {
   return (
     <div>
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-1 lg:grid-cols-3 2xl:grid-cols-2 3xl:grid-cols-2">
-        <APIConfig /> {/* Added APIConfig component */}
+        <APIConfig />
         <DatadogConfig />
         <VendorMetrics vendorName="datadog"/>
-        <VendorMetrics vendorName="aws"/>
-        <VendorMetrics vendorName="circleci"/>
-        <VendorMetrics vendorName="harness"/>
       </div>
     </div>
   );
