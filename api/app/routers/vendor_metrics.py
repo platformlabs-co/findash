@@ -6,7 +6,7 @@ from typing import Dict, Any
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from app.models import DatadogAPIConfiguration, User, VendorMetric
+from app.models import DatadogAPIConfiguration, User
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
 from pydantic import BaseModel

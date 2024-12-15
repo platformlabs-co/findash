@@ -25,17 +25,6 @@ class APIConfiguration(Base):
         'polymorphic_on': type
     }
 
-class VendorMetric(Base):
-    __tablename__ = "vendor_metrics"
-
-    id = Column(Integer, primary_key=True, index=True)
-    vendor_type = Column(String(50), nullable=False)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-    usage_data = Column(JSON)
-    total_cost = Column(Float)
-    api_configuration_id = Column(Integer, ForeignKey("api_configurations.id"), nullable=False)
-    api_configuration = relationship("APIConfiguration", back_populates="metrics")
-
 class DatadogAPIConfiguration(APIConfiguration):
     __tablename__ = "datadog_api_configurations"
 
