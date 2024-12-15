@@ -66,10 +66,14 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
             return metrics
             
         logger.info("Successfully retrieved Datadog metrics")
+        # Calculate total sum
+        total_sum = sum(entry['cost'] for entry in metrics['data']) if metrics.get('data') else 0
+        
         return JSONResponse(
             status_code=200,
             content={
                 **metrics,
+                "total_sum": total_sum,
                 "message": "Successfully retrieved metrics"
             }
         )
