@@ -159,14 +159,25 @@ async def create_datadog_configuration(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Create new configuration
-    api_config = DatadogAPIConfiguration(
-        user_id=user.id,
-        app_key=config.app_key,
-        api_key=config.api_key
-    )
+    # Check for existing configuration
+    existing_config = db.query(DatadogAPIConfiguration).filter(
+        DatadogAPIConfiguration.user_id == user.id
+    ).first()
     
-    db.add(api_config)
+    if existing_config:
+        # Update existing configuration
+        existing_config.app_key = config.app_key if config.app_key else existing_config.app_key
+        existing_config.api_key = config.api_key if config.api_key else existing_config.api_key
+        api_config = existing_config
+    else:
+        # Create new configuration
+        api_config = DatadogAPIConfiguration(
+            user_id=user.id,
+            app_key=config.app_key,
+            api_key=config.api_key
+        )
+        db.add(api_config)
+    
     db.commit()
     db.refresh(api_config)
     

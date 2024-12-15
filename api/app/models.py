@@ -18,6 +18,14 @@ class APIConfiguration(Base):
     type = Column(String(50), nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     user = relationship("User", back_populates="api_configurations")
+    
+    __table_args__ = (
+        CheckConstraint(
+            'type IN (\'datadog\')',
+            name='check_valid_type'
+        ),
+        UniqueConstraint('user_id', 'type', name='unique_user_type'),
+    )
 
     __mapper_args__ = {
         'polymorphic_identity': 'api_configuration',
