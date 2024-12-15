@@ -25,11 +25,6 @@ export default function SignIn() {
           description="Monitor your cloud spending across multiple vendors in real-time"
         />
         <FeatureCard 
-          icon={<MdBarChart className="h-6 w-6"/>}
-          title="Cost Analysis"
-          description="Deep dive into spending patterns and identify optimization opportunities"
-        />
-        <FeatureCard 
           icon={<MdAttachMoney className="h-6 w-6"/>}
           title="Cost Forecasting"
           description="Predict future cloud costs using advanced analytics"
@@ -37,7 +32,7 @@ export default function SignIn() {
         <FeatureCard 
           icon={<MdBarChart className="h-6 w-6"/>}
           title="AI-Powered Insights"
-          description="Machine learning models analyze spending patterns to provide accurate forecasts and optimization suggestions"
+          description="We use AI to provide accurate forecasts and optimization suggestions"
         />
       </div>
 
