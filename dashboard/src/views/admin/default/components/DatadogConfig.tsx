@@ -4,7 +4,11 @@ import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { CallBackendService } from "utils";
 
-const DatadogConfig = () => {
+interface DatadogConfigProps {
+  onSave?: () => void;
+}
+
+const DatadogConfig: React.FC<DatadogConfigProps> = ({ onSave }) => {
   const [appKey, setAppKey] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [message, setMessage] = useState('');
@@ -13,7 +17,7 @@ const DatadogConfig = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await CallBackendService(
+      await CallBackendService(
         "/v1/users/me/datadog-configuration",
         getAccessTokenSilently,
         {
@@ -25,6 +29,9 @@ const DatadogConfig = () => {
       setMessage('Configuration saved successfully!');
       setAppKey('');
       setApiKey('');
+      if (onSave) {
+        onSave();
+      }
     } catch (error) {
       setMessage('Failed to save configuration');
       console.error(error);
