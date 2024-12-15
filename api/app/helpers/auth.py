@@ -4,7 +4,10 @@ import jwt
 import os
 from fastapi import Request, Depends, HTTPException
 from jwt.exceptions import InvalidTokenError
+from sqlalchemy.orm import Session
 import logging
+from app.models import User
+from app.helpers.database import get_db
 
 logger = logging.getLogger(__name__)
 
@@ -40,14 +43,26 @@ class JsonWebToken:
 
 
 async def get_authenticated_user(
-    request: Request, token: HTTPBearer = Depends(token_auth_scheme)
+    request: Request, 
+    token: HTTPBearer = Depends(token_auth_scheme),
+    db: Session = Depends(get_db)
 ):
     jwt_token = JsonWebToken()
     jwt_token.jwt_access_token = token.credentials
     try:
         payload = jwt_token.validate()
+        sub = payload["sub"]
+        
+        # Check if user exists, create if not
+        db_user = db.query(User).filter(User.sub == sub).first()
+        if not db_user:
+            db_user = User(sub=sub)
+            db.add(db_user)
+            db.commit()
+            db.refresh(db_user)
+        
         user = {
-            "sub": payload["sub"],
+            "sub": sub,
             "token": token.credentials,
         }
         request.session["user"] = user
