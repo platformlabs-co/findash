@@ -190,13 +190,15 @@ const VendorMetrics = (props: { vendorName: String }) => {
               <div className="flex items-center justify-center h-64">
                 <p className="text-gray-500">Loading cost data...</p>
               </div>
-            ) : metrics?.data && metrics.data.length > 0 ? (
+            ) : metrics?.data && Array.isArray(metrics.data) && metrics.data.length > 0 ? (
               <>
                 <div className="h-[300px] w-full">
-                  <BarChart
-                    chartData={getBarChartData()}
-                    chartOptions={getBarChartOptions()}
-                  />
+                  {metrics.data && Array.isArray(metrics.data) && (
+                    <BarChart
+                      chartData={getBarChartData()}
+                      chartOptions={getBarChartOptions()}
+                    />
+                  )}
                 </div>
                 <div className="overflow-x-auto mt-6">
                   <table className="w-full">
