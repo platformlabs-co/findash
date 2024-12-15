@@ -26,17 +26,19 @@ jobs:
       run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
 
-    - name: Move to API directory
-      run: cd api
-
     - name: Install dependencies with UV
-      run: uv sync --frozen
+      working-directory: ./api
+      run: |
+        uv pip install -r pyproject.toml
 
     - name: Run black
+      working-directory: ./api
       run: uv run black --check .
 
     - name: Run flake8
+      working-directory: ./api
       run: uv run flake8
 
     - name: Run tests
+      working-directory: ./api
       run: uv run pytest
