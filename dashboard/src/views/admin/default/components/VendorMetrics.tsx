@@ -211,6 +211,25 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       ))}
                     </tbody>
                   </table>
+                  {forecastData.sums && (
+                    <div className="mt-6 p-4 bg-gray-100 dark:bg-navy-700 rounded-lg">
+                      <h3 className="text-lg font-bold mb-3">Total Forecast Costs</h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Linear Forecast Total</p>
+                          <p className="text-xl font-bold">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Best Case Total</p>
+                          <p className="text-xl font-bold text-green-500">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Worst Case Total</p>
+                          <p className="text-xl font-bold text-red-500">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -321,6 +340,25 @@ const VendorMetrics = (props: { vendorName: String }) => {
                       ))}
                     </tbody>
                   </table>
+                  {forecastData.sums && (
+                    <div className="mt-6 p-4 bg-gray-100 dark:bg-navy-700 rounded-lg">
+                      <h3 className="text-lg font-bold mb-3">Total Forecast Costs</h3>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Linear Forecast Total</p>
+                          <p className="text-xl font-bold">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Best Case Total</p>
+                          <p className="text-xl font-bold text-green-500">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600 dark:text-gray-400">Worst Case Total</p>
+                          <p className="text-xl font-bold text-red-500">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </>
             ) : (

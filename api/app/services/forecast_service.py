@@ -46,4 +46,16 @@ class ForecastService:
                 'worst_case': round(worst_case_cost, 2)
             })
             
-        return forecast_data
+        # Calculate sums
+        total_forecast = sum(entry['cost'] for entry in forecast_data)
+        total_best_case = sum(entry['best_case'] for entry in forecast_data)
+        total_worst_case = sum(entry['worst_case'] for entry in forecast_data)
+        
+        return {
+            'forecast_data': forecast_data,
+            'sums': {
+                'total_forecast': round(total_forecast, 2),
+                'total_best_case': round(total_best_case, 2),
+                'total_worst_case': round(total_worst_case, 2)
+            }
+        }

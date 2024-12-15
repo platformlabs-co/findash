@@ -1,4 +1,3 @@
-
 import logging
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -71,7 +70,8 @@ async def get_vendor_forecast(
             status_code=200,
             content={
                 "historical": historical_data["data"],
-                "forecast": forecast_data,
+                "forecast": forecast_data['forecast_data'],
+                "sums": forecast_data['sums'],
                 "message": "Successfully retrieved forecast"
             }
         )
