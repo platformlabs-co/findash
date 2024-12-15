@@ -41,18 +41,17 @@ class JsonWebToken:
 
 
 async def get_authenticated_user(
-        request: Request,
-        token: HTTPBearer = Depends(token_auth_scheme)
+    request: Request, token: HTTPBearer = Depends(token_auth_scheme)
 ):
     jwt_token = JsonWebToken()
     jwt_token.jwt_access_token = token.credentials
     try:
         payload = jwt_token.validate()
         user = {
-            "sub": payload['sub'],
+            "sub": payload["sub"],
             "token": token.credentials,
         }
-        request.session['user'] = user
+        request.session["user"] = user
         return user
     except InvalidTokenError as e:
         logger.error(f"Invalid token: {e}")

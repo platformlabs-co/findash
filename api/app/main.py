@@ -22,7 +22,7 @@ def setup_app():
     # Set up CORS middleware
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=['*'],  # Replace with your specific URL
+        allow_origins=["*"],  # Replace with your specific URL
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
