@@ -14,16 +14,16 @@ const VendorMetrics = (props: { vendorName: String }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const backend_data = await CallBackendService("/v1/vendors-metrics", getAccessTokenSilently);
+        const backend_data = await CallBackendService(`/v1/vendors-metrics/${props.vendorName}`, getAccessTokenSilently);
         console.log(backend_data);
         setData(backend_data);
       } catch (error) {	
         console.error(error);
-        setError('Failed to fetch data');
+        setError('Failed to fetch vendor metrics');
       }
     };
     fetchData();
-  }, []);
+  }, [props.vendorName]);
   return (
     <Card extra="pb-10 p-[20px]">
       <h1 className="uppercase text-cemter font-bold title">{props.vendorName}</h1>

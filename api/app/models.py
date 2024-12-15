@@ -1,7 +1,21 @@
 
-from sqlalchemy import Column, String, Integer, ForeignKey, CheckConstraint
+from datetime import datetime
+from sqlalchemy import Column, String, Integer, ForeignKey, CheckConstraint, DateTime, Float, JSON
 from sqlalchemy.orm import relationship
 from app.helpers.database import Base
+
+class VendorMetric(Base):
+    __tablename__ = "vendor_metrics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    vendor_type = Column(String(50), nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    usage_data = Column(JSON)
+    total_cost = Column(Float)
+    api_configuration_id = Column(Integer, ForeignKey("api_configurations.id"), nullable=False)
+    api_configuration = relationship("APIConfiguration", back_populates="metrics")
+
+APIConfiguration.metrics = relationship("VendorMetric", back_populates="api_configuration")
 
 class User(Base):
     __tablename__ = "users"
