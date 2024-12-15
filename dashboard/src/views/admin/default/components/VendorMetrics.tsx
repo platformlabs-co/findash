@@ -16,10 +16,32 @@ interface VendorMetricsData {
 
 const VendorMetrics = (props: { vendorName: String }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
+  const [forecastData, setForecastData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'actual' | 'forecast'>('actual');
   const { getAccessTokenSilently } = useAuth0();
+
+  const fetchForecastData = async () => {
+    try {
+      const response = await CallBackendService(
+        `/v1/vendors-forecast/${props.vendorName}`,
+        getAccessTokenSilently
+      );
+      setForecastData(response);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching forecast data:', error);
+      setError('Failed to load forecast data');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'forecast') {
+      fetchForecastData();
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -190,9 +212,44 @@ const VendorMetrics = (props: { vendorName: String }) => {
         )}
         
         {activeTab === 'forecast' && (
-          <div className="flex items-center justify-center h-64">
-            <p className="text-gray-500">Forecast data coming soon</p>
-          </div>
+          <>
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Loading forecast data...</p>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-red-500">{error}</p>
+              </div>
+            ) : forecastData?.data && forecastData.data.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <BarChart
+                  chartData={[
+                    {
+                      name: "Forecast",
+                      data: forecastData.data.map((item: any) => item.predicted_cost)
+                    }
+                  ]}
+                  chartOptions={{
+                    xaxis: {
+                      categories: forecastData.data.map((item: any) => item.month),
+                      labels: {
+                        style: {
+                          colors: "#A3AED0",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">No forecast data available</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </Card>
