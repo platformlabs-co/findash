@@ -56,9 +56,12 @@ async def list_api_configurations(
     auth_user: dict = Depends(get_authenticated_user),
     db: Session = Depends(get_db)
 ):
+    logger.debug(f"Attempting to fetch configurations for user sub: {auth_user['sub']}")
     user = db.query(User).filter(User.sub == auth_user["sub"]).first()
     if not user:
+        logger.debug(f"User not found for sub: {auth_user['sub']}")
         raise HTTPException(status_code=404, detail="User not found")
+    logger.debug(f"Found user with ID: {user.id}")
     
     configurations = db.query(DatadogAPIConfiguration).filter(
         DatadogAPIConfiguration.user_id == user.id

@@ -38,4 +38,4 @@ def setup_app():
 app = setup_app()
 
 app.include_router(vendor_metrics.router)
-app.include_router(users.router)
+app.include_router(users.router, prefix="")
