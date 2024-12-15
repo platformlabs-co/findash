@@ -7,10 +7,12 @@ channel = "stable-24_05"
 [[ports]]
 localPort = 3000
 externalPort = 80
+webview = false
 
 [[ports]]
 localPort = 8000
 externalPort = 8000
+webview = false
 
 [workflows]
 runButton = "Run backend"
