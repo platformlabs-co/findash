@@ -65,7 +65,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
   }, [props.vendorName, getAccessTokenSilently]);
 
   const getBarChartData = () => {
-    if (!metrics?.data) return [{ name: "Monthly Cost", data: [], color: "#4318FF" }];
+    if (!metrics?.data || !Array.isArray(metrics.data)) return [{ name: "Monthly Cost", data: [], color: "#4318FF" }];
     return [{
       name: "Monthly Cost",
       data: metrics.data.map(entry => entry.cost),
@@ -74,7 +74,11 @@ const VendorMetrics = (props: { vendorName: String }) => {
   };
 
   const getBarChartOptions = () => {
-    if (!metrics?.data) return {};
+    if (!metrics?.data || !Array.isArray(metrics.data)) return {
+      chart: { toolbar: { show: false } },
+      xaxis: { categories: [] },
+      yaxis: { show: true }
+    };
     return {
       chart: {
         toolbar: { show: false },
