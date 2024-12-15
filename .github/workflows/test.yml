@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies with UV
       working-directory: ./api
       run: |
-        uv pip install --system .
+        uv pip install --system --extra dev .
 
     - name: Run black
       working-directory: ./api
