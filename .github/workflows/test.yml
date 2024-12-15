@@ -23,13 +23,12 @@ jobs:
         python-version: '3.12'
 
     - name: Install uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
+      uses: astral-sh/setup-uv@v1
 
     - name: Install dependencies with UV
       working-directory: ./api
       run: |
-        $HOME/.cargo/bin/uv pip install --system .
+        uv pip install --system .
 
     - name: Run black
       working-directory: ./api
