@@ -4,9 +4,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import vendor_metrics
 from app.helpers.config import Config
+from app.helpers.database import Base, engine
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 logger = logging.getLogger(__name__)
 

@@ -15,6 +15,7 @@ dependencies = [
     "requests>=2.32.3",
     "httpx>=0.28.1",
     "black>=24.10.0",
+    "sqlalchemy>=2.0.28",
 ]
 
 [dependency-groups]
