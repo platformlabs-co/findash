@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI
+from app.helpers.database import init_db
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import vendor_metrics
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 def setup_app():
     app = FastAPI()
+init_db()
 
     config = Config()
     app.add_middleware(SessionMiddleware, secret_key=config.AppSecretKey)
