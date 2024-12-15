@@ -14,7 +14,8 @@ const VendorMetrics = (props: { vendorName: String }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const backend_data = await CallBackendService(`/v1/vendors-metrics/${props.vendorName}`, getAccessTokenSilently);
+        // Assuming Datadog vendor has ID 1 for now
+        const backend_data = await CallBackendService(`/v1/vendors-metrics/1`, getAccessTokenSilently);
         console.log(backend_data);
         setData(backend_data);
       } catch (error) {	
