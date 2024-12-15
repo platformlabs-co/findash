@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, StreamingResponse
 import io
 import csv
-from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models import DatadogAPIConfiguration, User
 from app.helpers.database import get_db
@@ -99,7 +98,8 @@ async def get_vendor_forecast(
                 iter([output.getvalue()]),
                 media_type="text/csv",
                 headers={
-                    "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv"
+                    "Content-Disposition": 
+                    f"attachment; filename={vendor_name}_forecast.csv"
                 },
             )
 

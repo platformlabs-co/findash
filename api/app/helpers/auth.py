@@ -1,6 +1,5 @@
 from fastapi.security import HTTPBearer
 import jwt
-import os
 from fastapi import Request, Depends, HTTPException
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.orm import Session

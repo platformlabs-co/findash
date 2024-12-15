@@ -5,9 +5,6 @@ from sqlalchemy import (
     Integer,
     ForeignKey,
     CheckConstraint,
-    DateTime,
-    Float,
-    JSON,
     UniqueConstraint,
 )
 from sqlalchemy.orm import relationship

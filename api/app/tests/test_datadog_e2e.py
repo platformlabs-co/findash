@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.main import app
-from app.models import Base, User, DatadogAPIConfiguration
+from app.models import Base, User
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
 
