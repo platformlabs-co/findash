@@ -55,11 +55,18 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
+        vendor_name = vendor_name.lower()
+        config = db.query(APIConfiguration).filter(
+            APIConfiguration.user_id == user.id,
+            APIConfiguration.type == vendor_name
+        ).first()
+        
+        if not config:
+            raise HTTPException(status_code=404, detail=f"{vendor_name} configuration not found for this user")
+
         if vendor_name == "datadog":
-            config = db.query(DatadogAPIConfiguration).filter(DatadogAPIConfiguration.user_id == user.id).first()
-            if not config:
-                raise HTTPException(status_code=404, detail="Datadog configuration not found for this user")
-            fetcher = DatadogMetricsFetcher(api_key=config.api_key, app_key=config.app_key)
+            datadog_config = db.query(DatadogAPIConfiguration).get(config.id)
+            fetcher = DatadogMetricsFetcher(api_key=datadog_config.api_key, app_key=datadog_config.app_key)
             metrics = fetcher.get_usage_data()
             return JSONResponse({"data": metrics})
         else:
@@ -67,6 +74,7 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
 
     except Exception as e:
         logger.exception(f"Error fetching vendor metrics: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
