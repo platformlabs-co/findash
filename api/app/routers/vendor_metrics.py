@@ -44,7 +44,7 @@ class DatadogMetricsFetcher:
                 monthly_costs = []
                 if 'data' in data and isinstance(data['data'], list):
                     for entry in data['data']:
-                        date = datetime.strptime(entry['attributes']['date'], "%Y-%m-%d")
+                        date = datetime.strptime(entry['attributes']['date'], "%Y-%m-%dT%H:%M:%SZ")
                         monthly_costs.append({
                             'month': date.strftime("%m-%Y"),
                             'cost': round(float(entry['attributes']['total_cost']), 2)
