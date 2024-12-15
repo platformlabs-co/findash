@@ -6,7 +6,7 @@ run = "uv pip install -r api/pyproject.toml && python3 -m uvicorn app.main:app -
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --app-dir api & cd dashboard && npm start"]
+run = ["sh", "-c", "uv sync & python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --app-dir api & cd dashboard && npm start"]
 
 [[ports]]
 localPort = 3000

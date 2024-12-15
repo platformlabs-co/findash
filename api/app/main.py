@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def setup_app():
     app = FastAPI()
-init_db()
+    init_db()
 
     config = Config()
     app.add_middleware(SessionMiddleware, secret_key=config.AppSecretKey)
