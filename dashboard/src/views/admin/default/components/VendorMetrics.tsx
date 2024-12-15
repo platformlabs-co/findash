@@ -18,6 +18,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<'actual' | 'forecast'>('actual');
   const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
@@ -129,11 +130,35 @@ const VendorMetrics = (props: { vendorName: String }) => {
   return (
     <Card extra="pb-10 p-[20px]">
       <div className="flex flex-col">
-        <h2 className="text-xl font-bold mb-4 text-navy-700 dark:text-white">
-          {props.vendorName.toString().charAt(0).toUpperCase() + props.vendorName.toString().slice(1)} Monthly Costs
-        </h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-navy-700 dark:text-white">
+            {props.vendorName.toString().charAt(0).toUpperCase() + props.vendorName.toString().slice(1)} Monthly Costs
+          </h2>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setActiveTab('actual')}
+              className={`px-4 py-2 rounded ${
+                activeTab === 'actual'
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-gray-100 text-gray-600 dark:bg-navy-700 dark:text-gray-200'
+              }`}
+            >
+              Actual
+            </button>
+            <button
+              onClick={() => setActiveTab('forecast')}
+              className={`px-4 py-2 rounded ${
+                activeTab === 'forecast'
+                  ? 'bg-brand-500 text-white'
+                  : 'bg-gray-100 text-gray-600 dark:bg-navy-700 dark:text-gray-200'
+              }`}
+            >
+              Forecast
+            </button>
+          </div>
+        </div>
         
-        {metrics?.data && metrics.data.length > 0 ? (
+        {activeTab === 'actual' && metrics?.data && metrics.data.length > 0 ? (
           <>
             <div className="h-[300px] w-full">
               <BarChart
@@ -162,6 +187,12 @@ const VendorMetrics = (props: { vendorName: String }) => {
           </>
         ) : (
           <p className="text-center text-gray-500">No cost data available</p>
+        )}
+        
+        {activeTab === 'forecast' && (
+          <div className="flex items-center justify-center h-64">
+            <p className="text-gray-500">Forecast data coming soon</p>
+          </div>
         )}
       </div>
     </Card>
