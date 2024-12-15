@@ -1,4 +1,3 @@
-
 import Card from "components/card";
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -43,7 +42,7 @@ const VendorMetrics = (props: { vendorName: String }) => {
   }, [props.vendorName, getAccessTokenSilently]);
 
   const getBarChartData = () => {
-    if (!metrics?.data) return [];
+    if (!metrics?.data) return [{ name: "Monthly Cost", data: [], color: "#4318FF" }];
     return [{
       name: "Monthly Cost",
       data: metrics.data.map(entry => entry.cost),
