@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from app.helpers.database import init_db
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import vendor_metrics
+from app.routers import vendor_metrics, users
 from app.helpers.config import Config
 from app.helpers.database import Base, engine
 import logging
@@ -38,3 +38,4 @@ def setup_app():
 app = setup_app()
 
 app.include_router(vendor_metrics.router)
+app.include_router(users.router)
