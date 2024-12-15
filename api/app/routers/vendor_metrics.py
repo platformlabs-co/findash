@@ -147,7 +147,7 @@ async def get_vendor_metrics(vendor_name: str, request: Request, auth_user: dict
         return JSONResponse(
             status_code=200,
             content={
-                "data": metrics,
+                **metrics,
                 "message": "Successfully retrieved metrics"
             }
         )
