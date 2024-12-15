@@ -29,16 +29,22 @@ jobs:
     - name: Install dependencies with UV
       working-directory: ./api
       run: |
-        uv pip install .
+        $HOME/.cargo/bin/uv pip install --system .
 
     - name: Run black
       working-directory: ./api
-      run: uv run black --check . 
+      run: |
+        $HOME/.cargo/bin/uv pip install --system black
+        black --check .
 
     - name: Run flake8
       working-directory: ./api
-      run: uv run flake8
+      run: |
+        $HOME/.cargo/bin/uv pip install --system flake8
+        flake8
 
     - name: Run tests
       working-directory: ./api
-      run: uv run pytest
+      run: |
+        $HOME/.cargo/bin/uv pip install --system pytest
+        pytest
