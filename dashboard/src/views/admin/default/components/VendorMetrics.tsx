@@ -239,9 +239,21 @@ const VendorMetrics = (props: { vendorName: String }) => {
                   <BarChart
                     chartData={[
                       {
-                        name: "Forecast",
+                        name: "Linear Forecast",
                         data: forecastData.forecast.map((item: any) => item.cost),
                         color: "#4318FF"
+                      },
+                      {
+                        name: "Best Case",
+                        data: forecastData.forecast.map((item: any) => item.best_case),
+                        color: "#05CD99",
+                        type: 'line'
+                      },
+                      {
+                        name: "Worst Case",
+                        data: forecastData.forecast.map((item: any) => item.worst_case),
+                        color: "#EE5D50",
+                        type: 'line'
                       }
                     ]}
                     chartOptions={{
@@ -293,7 +305,9 @@ const VendorMetrics = (props: { vendorName: String }) => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="py-3 text-left">Month</th>
-                        <th className="py-3 text-right">Forecasted Cost</th>
+                        <th className="py-3 text-right">Linear Forecast</th>
+                        <th className="py-3 text-right">Best Case</th>
+                        <th className="py-3 text-right">Worst Case</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -301,6 +315,8 @@ const VendorMetrics = (props: { vendorName: String }) => {
                         <tr key={index} className="border-b border-gray-200">
                           <td className="py-3">{entry.month}</td>
                           <td className="py-3 text-right">${entry.cost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="py-3 text-right text-green-500">${entry.best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="py-3 text-right text-red-500">${entry.worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         </tr>
                       ))}
                     </tbody>
