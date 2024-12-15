@@ -1,10 +1,9 @@
+
 from fastapi.security import HTTPBearer
 import jwt
 import os
 from fastapi import Request, Depends, HTTPException
-import jwt
 from jwt.exceptions import InvalidTokenError
-import os
 import logging
 
 logger = logging.getLogger(__name__)

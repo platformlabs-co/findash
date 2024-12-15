@@ -1,19 +1,17 @@
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
 
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import vendor_metrics
 from app.helpers.config import Config
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
 
 def setup_app():
-
     app = FastAPI()
 
     config = Config()
