@@ -1,3 +1,4 @@
+
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
@@ -15,19 +16,32 @@ class LineChart extends React.Component<ChartProps, ChartState> {
     super(props);
 
     this.state = {
-      chartData: [],
-      chartOptions: {},
+      chartData: props.chartData || [],
+      chartOptions: props.chartOptions || {},
     };
   }
 
   componentDidMount() {
     this.setState({
-      chartData: this.props.chartData,
-      chartOptions: this.props.chartOptions,
+      chartData: this.props.chartData || [],
+      chartOptions: this.props.chartOptions || {},
     });
   }
 
+  componentDidUpdate(prevProps: ChartProps) {
+    if (prevProps.chartData !== this.props.chartData || prevProps.chartOptions !== this.props.chartOptions) {
+      this.setState({
+        chartData: this.props.chartData || [],
+        chartOptions: this.props.chartOptions || {},
+      });
+    }
+  }
+
   render() {
+    if (!this.state.chartData || !Array.isArray(this.state.chartData)) {
+      return <div>Loading...</div>;
+    }
+
     return (
       <ReactApexChart
         options={this.state.chartOptions}
