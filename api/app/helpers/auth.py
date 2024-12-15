@@ -11,8 +11,8 @@ from app.helpers.database import get_db
 
 logger = logging.getLogger(__name__)
 
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN", "dev-example.us.auth0.com")
-API_AUDIENCE = os.getenv("API_AUDIENCE", "https://api.example.com")
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+API_AUDIENCE = os.getenv("API_AUDIENCE", "")
 ALGORITHMS = ["RS256"]
 
 token_auth_scheme = HTTPBearer()
