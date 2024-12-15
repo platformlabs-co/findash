@@ -229,7 +229,11 @@ const VendorMetrics = (props: { vendorName: String }) => {
               <div className="flex items-center justify-center h-64">
                 <p className="text-red-500">{error}</p>
               </div>
-            ) : forecastData?.forecast && forecastData.forecast.length > 0 ? (
+            ) : loading ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-gray-500">Loading forecast data...</p>
+              </div>
+            ) : forecastData?.forecast && Array.isArray(forecastData.forecast) && forecastData.forecast.length > 0 ? (
               <div className="h-[300px] w-full">
                 <BarChart
                   chartData={[
