@@ -62,16 +62,10 @@ async def get_vendor_forecast(
         if isinstance(historical_data, JSONResponse):
             return historical_data
             
-        # For now, return historical data with zero forecast
-        current_date = datetime.now()
-        forecast_data = []
+        from app.services.forecast_service import ForecastService
         
-        for i in range(12):
-            future_date = current_date + timedelta(days=30 * (i + 1))
-            forecast_data.append({
-                'month': future_date.strftime("%m-%Y"),
-                'predicted_cost': 0.00
-            })
+        # Generate forecast using the ForecastService
+        forecast_data = ForecastService.predict_mom_growth(historical_data["data"])
             
         return JSONResponse(
             status_code=200,
