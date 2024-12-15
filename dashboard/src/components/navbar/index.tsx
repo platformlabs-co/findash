@@ -15,7 +15,7 @@ const Navbar = (props: {
   };
 
   return (
-    <nav className="sticky top-0 z-40 flex w-full flex-row items-center justify-between bg-black/90 p-2 backdrop-blur-xl dark:bg-black">
+    <nav className="sticky top-0 z-40 flex w-full flex-row items-center justify-between bg-gray-900 border-gray-800 p-2 backdrop-blur-xl">
       <div className="flex items-center">
         <Link to="/admin/default" className="text-navy-700 dark:text-white text-xl font-bold">
           Dashboard
