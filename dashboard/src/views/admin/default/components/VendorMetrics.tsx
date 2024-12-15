@@ -240,18 +240,18 @@ const VendorMetrics = (props: { vendorName: String }) => {
                     chartData={[
                       {
                         name: "Linear Forecast",
-                        data: forecastData.forecast.map((item: any) => item.cost),
+                        data: forecastData?.forecast?.map((item: any) => item.cost) || [],
                         color: "#4318FF"
                       },
                       {
                         name: "Best Case",
-                        data: forecastData.forecast.map((item: any) => item.best_case),
+                        data: forecastData?.forecast?.map((item: any) => item.best_case) || [],
                         color: "#05CD99",
                         type: 'line'
                       },
                       {
                         name: "Worst Case",
-                        data: forecastData.forecast.map((item: any) => item.worst_case),
+                        data: forecastData?.forecast?.map((item: any) => item.worst_case) || [],
                         color: "#EE5D50",
                         type: 'line'
                       }
