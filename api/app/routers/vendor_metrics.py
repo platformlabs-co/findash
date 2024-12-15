@@ -33,7 +33,11 @@ class DatadogMetricsFetcher:
                 headers=headers
             )
             
+            logger.info(f"Datadog API Response - Status: {response.status_code}")
+            logger.info(f"Datadog API Response - Body: {response.text}")
+            
             if response.status_code == 403:
+                logger.error("Datadog API authorization failed")
                 return JSONResponse(
                     status_code=403,
                     content={
@@ -43,6 +47,7 @@ class DatadogMetricsFetcher:
                     }
                 )
             elif response.status_code != 200:
+                logger.error(f"Datadog API request failed with status {response.status_code}")
                 return JSONResponse(
                     status_code=response.status_code,
                     content={
@@ -51,7 +56,8 @@ class DatadogMetricsFetcher:
                         "status": response.status_code
                     }
                 )
-                
+            
+            logger.info("Successfully retrieved Datadog metrics")
             return response.json()
             
         except requests.RequestException as e:
