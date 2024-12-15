@@ -29,8 +29,12 @@ class DatadogMetricsFetcher:
         
         try:
             response = requests.get(
-                f"{self.base_url}/usage/billable-summary?start_month={start_date}&end_month={end_date}",
-                headers=headers
+                "https://api.datadoghq.com/api/v2/usage/historical_cost",
+                headers=headers,
+                params={
+                    "start_month": start_date,
+                    "end_month": end_date
+                }
             )
             
             logger.info(f"Datadog API Response - Status: {response.status_code}")
