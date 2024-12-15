@@ -1,26 +1,19 @@
 
 modules = ["nodejs-20:v8-20230920-bd784b9", "python-3.12:v25-20230920-d4ad2e4"]
-run = "cd dashboard && npm install && npm start"
 
 [nix]
 channel = "stable-24_05"
-
-[deployment]
-run = ["sh", "-c", "uv sync &  & cd dashboard && npm start"]
 
 [[ports]]
 localPort = 3000
 externalPort = 80
 
 [[ports]]
-localPort = 3001
-externalPort = 3001
-
-[[ports]]
 localPort = 8000
 externalPort = 8000
 
 [workflows]
+runButton = "Run backend"
 
 [[workflows.workflow]]
 name = "Run backend"
@@ -33,4 +26,17 @@ args = "uv pip install -r api/pyproject.toml"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --app-dir api"
+args = "cd api && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+[[workflows.workflow]]
+name = "Run frontend"
+mode = "sequential"
+author = 3687642
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd dashboard && npm install"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd dashboard && npm start"
