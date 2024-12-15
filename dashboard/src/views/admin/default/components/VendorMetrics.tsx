@@ -241,6 +241,20 @@ const VendorMetrics = (props: { vendorName: String }) => {
               </div>
             ) : forecastData?.forecast && Array.isArray(forecastData.forecast) && forecastData.forecast.length > 0 ? (
               <>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="p-4 bg-navy-700 rounded-xl">
+                    <p className="text-sm text-gray-400">Best Case Total</p>
+                    <p className="text-xl text-green-500">${forecastData.sums.total_best_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <div className="p-4 bg-navy-700 rounded-xl">
+                    <p className="text-sm text-gray-400">Linear Forecast Total</p>
+                    <p className="text-xl text-white">${forecastData.sums.total_forecast.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <div className="p-4 bg-navy-700 rounded-xl">
+                    <p className="text-sm text-gray-400">Worst Case Total</p>
+                    <p className="text-xl text-red-500">${forecastData.sums.total_worst_case.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  </div>
+                </div>
                 <div className="overflow-x-auto mt-6">
                   <table className="w-full">
                     <thead>
