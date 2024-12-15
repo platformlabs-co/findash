@@ -1,12 +1,9 @@
 
 modules = ["nodejs-20:v8-20230920-bd784b9", "python-3.12:v25-20230920-d4ad2e4"]
-run = "printf '\033[0;32m[API]\033[0m ' && uv pip install -r api/pyproject.toml && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --app-dir api & (printf '\033[0;34m[DASHBOARD]\033[0m ' && cd dashboard && npm install && npm start)"
+run = "cd dashboard && npm install && npm start && cd .. && uv pip install -r api/pyproject.toml && gunicorn app.main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --reload --app-dir api --log-file gunicorn.log --access-logfile access.log"
 
 [nix]
 channel = "stable-24_05"
-
-[deployment]
-run = ["sh", "-c", "uv sync &  & cd dashboard && npm start"]
 
 [[ports]]
 localPort = 3000
