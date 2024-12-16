@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter, Depends, Query
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, Response
 import io
 import csv
 from sqlalchemy.orm import Session
@@ -95,13 +95,16 @@ async def get_vendor_forecast(
                 )
 
             output.seek(0)
-            return StreamingResponse(
-                iter([output.getvalue()]),
+            output_value = output.getvalue()
+            response = Response(
+                content=output_value,
                 media_type="text/csv",
                 headers={
-                    "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv"
+                    "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv",
+                    "Content-Type": "text/csv; charset=utf-8"
                 },
             )
+            return response
 
         return JSONResponse(
             status_code=200,
