@@ -25,7 +25,9 @@ class SecretsService:
                 cls._client = client
                 cls._project_id = project_id
             except Exception as e:
-                raise Exception(f"Failed to authenticate with Infisical: {str(e)}")
+                print(f"Failed to authenticate with Infisical: {str(e)}")
+                import sys
+                sys.exit(1)
 
         return cls._instance
 
