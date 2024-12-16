@@ -15,12 +15,12 @@ class DatadogService:
     def __init__(self, app_key_secret_id: str, api_key_secret_id: str):
         secrets = SecretsService()
         self.app_key = (
-            secrets.get_secret(app_key_secret_id).secret_value
+            secrets.get_secret(app_key_secret_id, secret_path="/customer-secrets")
             if app_key_secret_id
             else None
         )
         self.api_key = (
-            secrets.get_secret(api_key_secret_id).secret_value
+            secrets.get_secret(api_key_secret_id, secret_path="/customer-secrets")
             if api_key_secret_id
             else None
         )

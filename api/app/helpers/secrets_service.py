@@ -30,16 +30,17 @@ class SecretsService:
         return cls._instance
 
     def get_secret(
-        self, secret_name: str, default: Optional[str] = None
+        self, secret_name: str, default: Optional[str] = None, secret_path: str = "/"
     ) -> Optional[str]:
         try:
             secret = self._client.secrets.get_secret_by_name(
                 secret_name=secret_name,
                 project_id=self._project_id,
                 environment_slug="dev",
-                secret_path="/",
+                secret_path=secret_path,
             )
-            return default
+            print(secret.to_dict()["secret"])
+            return secret.to_dict()["secret"]["secretValue"]
         except Exception as e:
             print(f"Error fetching secret {secret_name}: {str(e)}")
             return default
