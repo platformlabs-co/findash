@@ -23,12 +23,14 @@ def override_get_db():
     finally:
         db.close()
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="module", autouse=True)
 def mock_secrets_service():
-    with patch('app.helpers.secrets_service.SecretsService', autospec=True) as mock:
+    with patch('app.helpers.secrets_service.SecretsService') as mock_class:
         mock_instance = MagicMock()
         mock_instance.get_secret.return_value = "test-secret"
-        mock.return_value = mock_instance
+        mock_instance._client = MagicMock()
+        mock_class._instance = mock_instance
+        mock_class.return_value = mock_instance
         yield mock_instance
 
 @pytest.fixture(scope="module")
