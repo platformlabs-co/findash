@@ -13,7 +13,7 @@ class SecretsService:
             client_id = os.getenv("INFISICAL_CLIENT_ID")
             client_secret = os.getenv("INFISICAL_CLIENT_SECRET")
             project_id = "e2285640-9115-45c6-9888-e7427b3f8c0a"
-        
+
             if not all([client_id, client_secret]):
                 raise ValueError(
                     "INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET must be set"
@@ -21,7 +21,9 @@ class SecretsService:
 
             try:
                 client = InfisicalSDKClient(host="https://app.infisical.com")
-                client.auth.universal_auth.login(client_id=client_id, client_secret=client_secret)
+                client.auth.universal_auth.login(
+                    client_id=client_id, client_secret=client_secret
+                )
                 cls._client = client
                 cls._project_id = project_id
             except Exception as e:
@@ -49,7 +51,7 @@ class SecretsService:
         self, secret_name: str, secret_value: str, tag: Optional[str] = None
     ):
         try:
-            secret = self._client.secrets.create_secret_by_name(
+            self._client.secrets.create_secret_by_name(
                 secret_name=secret_name,
                 project_id=self._project_id,
                 secret_path="/customer-secrets",
@@ -57,8 +59,8 @@ class SecretsService:
                 secret_value=secret_value,
             )
         # If secret already exists we update
-        except Exception as e:
-            secret = self._client.secrets.update_secret_by_name(
+        except Exception:
+            self._client.secrets.update_secret_by_name(
                 current_secret_name=secret_name,
                 project_id=self._project_id,
                 secret_path="/customer-secrets",
@@ -66,4 +68,3 @@ class SecretsService:
                 secret_value=secret_value,
             )
         return secret_name
-

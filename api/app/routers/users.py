@@ -49,8 +49,8 @@ async def create_datadog_configuration(
     if config.api_key:
         api_key_secret_id = secrets.create_customer_secret(
             f"user_{user.id}_datadog_api_key", config.api_key, "datadog"
-        )    
-        
+        )
+
     # Create new configuration
     api_config = DatadogAPIConfiguration(
         user_id=user.id,

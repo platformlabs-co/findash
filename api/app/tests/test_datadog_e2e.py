@@ -1,4 +1,3 @@
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -15,6 +14,7 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def override_get_db():
     try:
         db = TestingSessionLocal()
@@ -22,13 +22,15 @@ def override_get_db():
     finally:
         db.close()
 
+
 @pytest.fixture(scope="module")
 def mock_secrets_service():
-    with patch('app.helpers.secrets_service.SecretsService', autospec=True) as mock:
+    with patch("app.helpers.secrets_service.SecretsService", autospec=True) as mock:
         mock_instance = MagicMock()
         mock_instance.get_secret.return_value = "test-secret"
         mock.return_value = mock_instance
         yield mock_instance
+
 
 @pytest.fixture(scope="module")
 def test_client(mock_secrets_service):

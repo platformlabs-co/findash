@@ -1,4 +1,3 @@
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -16,6 +15,7 @@ engine = create_engine(
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def override_get_db():
     try:
         db = TestingSessionLocal()
@@ -31,13 +31,15 @@ def test_client():
     mock_config.AppSecretKey = "test-secret-key"
     mock_config.Auth0Domain = "test.auth0.com"
     mock_config.Auth0Audience = "test-audience"
-    
-    with patch('app.helpers.config.Config', return_value=mock_config):
+
+    with patch("app.helpers.config.Config", return_value=mock_config):
         from app.main import app
 
         Base.metadata.create_all(bind=engine)
         app.dependency_overrides[get_db] = override_get_db
-        app.dependency_overrides[get_authenticated_user] = lambda: {"sub": "test-user-123"}
+        app.dependency_overrides[get_authenticated_user] = lambda: {
+            "sub": "test-user-123"
+        }
 
         client = TestClient(app)
 
