@@ -20,6 +20,7 @@ dependencies = [
     "pre-commit>=2.20.0",
     "flake8>=7.1.1",
     "pytest>=8.3.4",
+    "pydantic>=2.6.1",
 ]
 
 [dependency-groups]
@@ -28,4 +29,5 @@ dev = [
     "pre-commit>=2.20.0",
     "flake8>=7.1.1",
     "pytest>=8.3.4",
+    "pydantic>=2.6.1",
 ]
