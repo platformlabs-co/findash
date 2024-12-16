@@ -11,6 +11,9 @@ externalPort = 80
 localPort = 8000
 externalPort = 8000
 
+[env]
+PYTHONPATH = "${PYTHONPATH}:${REPL_HOME}/api"
+
 [workflows]
 runButton = "Run backend"
 
@@ -21,7 +24,7 @@ author = 3687642
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "source api/.venv/bin/activate && cd api && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+args = "cd api && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 [[workflows.workflow]]
 name = "Run frontend"
