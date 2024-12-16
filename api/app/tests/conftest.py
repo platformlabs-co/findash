@@ -7,6 +7,7 @@ from unittest.mock import patch, MagicMock
 from app.models import Base, User
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
+from app.helpers.config import Config
 
 # Create test database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -32,14 +33,21 @@ def mock_secrets_service():
 
 @pytest.fixture(scope="module")
 def test_client(mock_secrets_service):
-    # Set up
-    Base.metadata.create_all(bind=engine)
-    app.dependency_overrides[get_db] = override_get_db
-    app.dependency_overrides[get_authenticated_user] = lambda: {"sub": "test-user-123"}
+    # Mock Config
+    mock_config = MagicMock(spec=Config)
+    mock_config.AppSecretKey = "test-secret-key"
+    mock_config.Auth0Domain = "test.auth0.com"
+    mock_config.Auth0Audience = "test-audience"
+    
+    with patch('app.main.Config', return_value=mock_config):
+        # Set up
+        Base.metadata.create_all(bind=engine)
+        app.dependency_overrides[get_db] = override_get_db
+        app.dependency_overrides[get_authenticated_user] = lambda: {"sub": "test-user-123"}
 
-    # Import app here to use the mock
-    from app.main import app
-    client = TestClient(app)
+        # Import app here to use the mock
+        from app.main import app
+        client = TestClient(app)
 
     # Create test user
     db = TestingSessionLocal()
