@@ -41,7 +41,6 @@ class SecretsService:
                 environment_slug="dev",
                 secret_path=secret_path,
             )
-            print(secret.to_dict()["secret"])
             return secret.to_dict()["secret"]["secretValue"]
         except Exception as e:
             print(f"Error fetching secret {secret_name}: {str(e)}")

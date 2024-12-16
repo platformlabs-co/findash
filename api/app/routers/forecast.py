@@ -43,7 +43,7 @@ async def get_vendor_forecast(
                     "code": "INVALID_VENDOR",
                 },
             )
-    
+
         datadog_config = (
             db.query(DatadogAPIConfiguration)
             .filter(DatadogAPIConfiguration.user_id == user.id)
@@ -104,7 +104,7 @@ async def get_vendor_forecast(
                     "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv",
                     "Content-Type": "text/csv; charset=utf-8",
                     "Access-Control-Allow-Origin": "*",
-                    "Cache-Control": "no-cache"
+                    "Cache-Control": "no-cache",
                 },
             )
             return response
