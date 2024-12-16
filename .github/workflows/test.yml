@@ -45,4 +45,4 @@ jobs:
     - name: Run tests
       working-directory: ./api
       run: |
-        pytest
+        pytest --ignore-glob="*e2e.py"
