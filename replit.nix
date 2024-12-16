@@ -4,7 +4,7 @@
     (pkgs.python312.override {
       packageOverrides = self: super: {
         python = super.python.override {
-          version = "3.12.6";
+          version = "3.12.2";
         };
       };
     })
