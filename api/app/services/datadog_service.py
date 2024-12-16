@@ -3,6 +3,7 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, Any
+from app.helpers.secrets_service import SecretsService
 
 import requests
 from fastapi.responses import JSONResponse
@@ -13,8 +14,16 @@ logger = logging.getLogger(__name__)
 class DatadogService:
     def __init__(self, app_key_secret_id: str, api_key_secret_id: str):
         secrets = SecretsService()
-        self.app_key = secrets._client.get_secret_by_id(app_key_secret_id).secret_value if app_key_secret_id else None
-        self.api_key = secrets._client.get_secret_by_id(api_key_secret_id).secret_value if api_key_secret_id else None
+        self.app_key = (
+            secrets._client.get_secret_by_id(app_key_secret_id).secret_value
+            if app_key_secret_id
+            else None
+        )
+        self.api_key = (
+            secrets._client.get_secret_by_id(api_key_secret_id).secret_value
+            if api_key_secret_id
+            else None
+        )
         self.base_url = "https://api.datadoghq.com/api/v1"
 
     def get_historical_data(self) -> Dict[str, Any]:
