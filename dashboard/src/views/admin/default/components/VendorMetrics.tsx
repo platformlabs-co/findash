@@ -192,7 +192,23 @@ const VendorMetrics = (props: { vendorName: String }) => {
                 onClick={async () => {
                   try {
                     const token = await getAccessTokenSilently();
-                    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/v1/vendors-forecast/${props.vendorName}?format=csv&token=${token}`;
+                    const response = await fetch(
+                      `${process.env.REACT_APP_BACKEND_URL}/v1/vendors-forecast/${props.vendorName}?format=csv`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${props.vendorName}_forecast.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
                   } catch (error) {
                     console.error("Export failed:", error);
                   }
