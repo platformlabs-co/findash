@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.models import DatadogAPIConfiguration, User
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
+from app.helpers.secrets_service import SecretsService
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -35,9 +36,26 @@ async def create_datadog_configuration(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    secrets = SecretsService()
+
+    app_key_secret_id = None
+    api_key_secret_id = None
+
+    if config.app_key:
+        app_key_secret_id = secrets.create_customer_secret(
+            f"user_{user.id}_datadog_app_key", config.app_key, "datadog"
+        )
+
+    if config.api_key:
+        api_key_secret_id = secrets.create_customer_secret(
+            f"user_{user.id}_datadog_api_key", config.api_key, "datadog"
+        )
+
     # Create new configuration
     api_config = DatadogAPIConfiguration(
-        user_id=user.id, app_key=config.app_key, api_key=config.api_key
+        user_id=user.id,
+        app_key_secret_id=app_key_secret_id,
+        api_key_secret_id=api_key_secret_id,
     )
 
     db.add(api_config)
@@ -77,8 +95,6 @@ async def list_api_configurations(
                 {
                     "id": config.id,
                     "type": "datadog",
-                    "app_key": config.app_key,
-                    "api_key": config.api_key,
                 }
                 for config in configurations
             ]

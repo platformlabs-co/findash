@@ -71,7 +71,8 @@ async def get_vendor_metrics(
             )
 
         service = DatadogService(
-            api_key=datadog_config.api_key, app_key=datadog_config.app_key
+            api_key_secret_id=datadog_config.api_key_secret_id,
+            app_key_secret_id=datadog_config.app_key_secret_id,
         )
         logger.debug("Fetching Datadog usage data")
         metrics = service.get_historical_data()

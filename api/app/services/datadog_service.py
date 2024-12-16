@@ -1,16 +1,29 @@
+"""DataDog service module for handling DataDog API interactions."""
+
 import logging
 from datetime import datetime, timedelta
-import requests
 from typing import Dict, Any
+from app.helpers.secrets_service import SecretsService
+
+import requests
 from fastapi.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 
 
 class DatadogService:
-    def __init__(self, api_key: str, app_key: str):
-        self.api_key = api_key
-        self.app_key = app_key
+    def __init__(self, app_key_secret_id: str, api_key_secret_id: str):
+        secrets = SecretsService()
+        self.app_key = (
+            secrets.get_secret(app_key_secret_id, secret_path="/customer-secrets")
+            if app_key_secret_id
+            else None
+        )
+        self.api_key = (
+            secrets.get_secret(api_key_secret_id, secret_path="/customer-secrets")
+            if api_key_secret_id
+            else None
+        )
         self.base_url = "https://api.datadoghq.com/api/v1"
 
     def get_historical_data(self) -> Dict[str, Any]:
