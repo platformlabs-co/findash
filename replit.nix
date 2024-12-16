@@ -1,10 +1,10 @@
 
 {pkgs}: {
   deps = [
-    (pkgs.python312.override {
+    (pkgs.python313.override {
       packageOverrides = self: super: {
         python = super.python.override {
-          version = "3.12.2";
+          version = "3.13.0a5";
         };
       };
     })
