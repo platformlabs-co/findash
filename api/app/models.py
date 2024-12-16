@@ -41,15 +41,13 @@ class APIConfiguration(Base):
 
 
 class DatadogAPIConfiguration(APIConfiguration):
+    """Datadog API configuration model."""
+    
     __tablename__ = "datadog_api_configurations"
-
     id = Column(Integer, ForeignKey("api_configurations.id"), primary_key=True)
     app_key = Column(String)
     api_key = Column(String)
-
-    __mapper_args__ = {
-        "polymorphic_identity": "datadog",
-    }
+    __mapper_args__ = {"polymorphic_identity": "datadog"}
 
     __table_args__ = (
         CheckConstraint(

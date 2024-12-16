@@ -54,11 +54,9 @@ async def get_vendor_metrics(
             )
 
         logger.info("Processing Datadog metrics request")
-        datadog_config = (
-            db.query(DatadogAPIConfiguration)
-            .filter(DatadogAPIConfiguration.user_id == user.id)
-            .first()
-        )
+        datadog_config = db.query(DatadogAPIConfiguration).filter(
+            DatadogAPIConfiguration.user_id == user.id
+        ).first()
 
         if not datadog_config:
             return JSONResponse(
