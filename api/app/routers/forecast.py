@@ -98,8 +98,7 @@ async def get_vendor_forecast(
                 iter([output.getvalue()]),
                 media_type="text/csv",
                 headers={
-                    "Content-Disposition": 
-                    f"attachment; filename={vendor_name}_forecast.csv"
+                    "Content-Disposition": f"attachment; filename={vendor_name}_forecast.csv"
                 },
             )
 
