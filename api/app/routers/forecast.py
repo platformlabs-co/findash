@@ -59,12 +59,13 @@ async def get_vendor_forecast(
                     "code": "CONFIG_NOT_FOUND",
                 },
             )
-
+            
         service = DatadogService(
-            api_key=datadog_config.api_key, app_key=datadog_config.app_key
+            api_key=datadog_config.api_key_secret_id,
+            app_key=datadog_config.app_key_secret_id
         )
+        
         historical_data = service.get_historical_data()
-
         if isinstance(historical_data, JSONResponse):
             return historical_data
 

@@ -47,8 +47,6 @@ class DatadogAPIConfiguration(APIConfiguration):
     id = Column(Integer, ForeignKey("api_configurations.id"), primary_key=True)
     app_key_secret_id = Column(String)
     api_key_secret_id = Column(String)
-    api_key = Column(String)
-    app_key = Column(String)
 
     __mapper_args__ = {"polymorphic_identity": "datadog"}
 

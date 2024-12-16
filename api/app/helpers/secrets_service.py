@@ -33,15 +33,36 @@ class SecretsService:
         self, secret_name: str, default: Optional[str] = None
     ) -> Optional[str]:
         try:
-            secrets = self._client.secrets.listSecrets(
-                project_id=self._project_id, 
-                environment_slug="dev", 
-                secret_path="/"
+            secret = self._client.secrets.get_secret_by_name(
+                secret_name=secret_name,
+                project_id=self._project_id,
+                environment_slug="dev",
+                secret_path="/",
             )
-            for secret in secrets:
-                if secret.secret_name == secret_name:
-                    return secret.secret_value
             return default
         except Exception as e:
             print(f"Error fetching secret {secret_name}: {str(e)}")
             return default
+
+    def create_customer_secret(
+        self, secret_name: str, secret_value: str, tag: Optional[str] = None
+    ):
+        try:
+            secret = self._client.secrets.create_secret_by_name(
+                secret_name=secret_name,
+                project_id=self._project_id,
+                secret_path="/customer-secrets",
+                environment_slug="dev",
+                secret_value=secret_value,
+            )
+        # If secret already exists we update
+        except Exception as e:
+            secret = self._client.secrets.update_secret_by_name(
+                current_secret_name=secret_name,
+                project_id=self._project_id,
+                secret_path="/customer-secrets",
+                environment_slug="dev",
+                secret_value=secret_value,
+            )
+        return secret_name
+

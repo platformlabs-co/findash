@@ -42,15 +42,15 @@ async def create_datadog_configuration(
     api_key_secret_id = None
 
     if config.app_key:
-        app_key_secret_id = secrets._client.create_secret(
-            f"datadog_app_key_{user.id}", config.app_key, "datadog"
-        ).secret_id
+        app_key_secret_id = secrets.create_customer_secret(
+            f"user_{user.id}_datadog_app_key", config.app_key, "datadog"
+        )
 
     if config.api_key:
-        api_key_secret_id = secrets._client.create_secret(
-            f"datadog_api_key_{user.id}", config.api_key, "datadog"
-        ).secret_id
-
+        api_key_secret_id = secrets.create_customer_secret(
+            f"user_{user.id}_datadog_api_key", config.api_key, "datadog"
+        )    
+        
     # Create new configuration
     api_config = DatadogAPIConfiguration(
         user_id=user.id,
@@ -95,8 +95,6 @@ async def list_api_configurations(
                 {
                     "id": config.id,
                     "type": "datadog",
-                    "app_key": config.app_key,
-                    "api_key": config.api_key,
                 }
                 for config in configurations
             ]
