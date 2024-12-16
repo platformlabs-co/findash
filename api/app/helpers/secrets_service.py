@@ -12,11 +12,11 @@ class SecretsService:
             cls._instance = super(SecretsService, cls).__new__(cls)
             client_id = os.getenv("INFISICAL_CLIENT_ID")
             client_secret = os.getenv("INFISICAL_CLIENT_SECRET")
-            project_id = os.getenv("INFISICAL_PROJECT_ID")
+            project_id = "e2285640-9115-45c6-9888-e7427b3f8c0a"
         
-            if not all([client_id, client_secret, project_id]):
+            if not all([client_id, client_secret]):
                 raise ValueError(
-                    "INFISICAL_CLIENT_ID, INFISICAL_CLIENT_SECRET and INFISICAL_PROJECT_ID must be set"
+                    "INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET must be set"
                 )
 
             try:
