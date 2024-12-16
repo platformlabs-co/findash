@@ -1,4 +1,3 @@
-from datetime import datetime
 from sqlalchemy import (
     Column,
     String,
@@ -42,7 +41,7 @@ class APIConfiguration(Base):
 
 class DatadogAPIConfiguration(APIConfiguration):
     """Datadog API configuration model."""
-    
+
     __tablename__ = "datadog_api_configurations"
     id = Column(Integer, ForeignKey("api_configurations.id"), primary_key=True)
     app_key = Column(String)
