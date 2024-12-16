@@ -30,7 +30,7 @@ def test_client():
 
     # Create test user
     db = TestingSessionLocal()
-    test_user = User(sub="test-user-123", email="test@example.com")
+    test_user = User(sub="test-user-123")
     db.add(test_user)
     db.commit()
     db.close()
