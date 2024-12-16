@@ -41,7 +41,7 @@ class APIConfiguration(Base):
 
 class DatadogAPIConfiguration(APIConfiguration):
     """DatadogAPIConfiguration model for storing API configuration."""
-    
+
     __tablename__ = "datadog_api_configurations"
 
     id = Column(Integer, ForeignKey("api_configurations.id"), primary_key=True)

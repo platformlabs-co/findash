@@ -23,32 +23,22 @@ def override_get_db():
     finally:
         db.close()
 
-@pytest.fixture(scope="module", autouse=True)
-def mock_secrets_service():
-    with patch('app.helpers.secrets_service.SecretsService') as mock_class:
-        mock_instance = MagicMock()
-        mock_instance.get_secret.return_value = "test-secret"
-        mock_instance._client = MagicMock()
-        mock_class._instance = mock_instance
-        mock_class.return_value = mock_instance
-        yield mock_instance
 
 @pytest.fixture(scope="module")
-def test_client(mock_secrets_service):
+def test_client():
     # Mock Config
     mock_config = MagicMock(spec=Config)
     mock_config.AppSecretKey = "test-secret-key"
     mock_config.Auth0Domain = "test.auth0.com"
     mock_config.Auth0Audience = "test-audience"
     
-    with patch('app.main.Config', return_value=mock_config):
-        # Set up
+    with patch('app.helpers.config.Config', return_value=mock_config):
+        from app.main import app
+
         Base.metadata.create_all(bind=engine)
         app.dependency_overrides[get_db] = override_get_db
         app.dependency_overrides[get_authenticated_user] = lambda: {"sub": "test-user-123"}
 
-        # Import app here to use the mock
-        from app.main import app
         client = TestClient(app)
 
     # Create test user
