@@ -1,6 +1,5 @@
-from infisical import InfisicalClient
+from infisical_sdk import InfisicalSDKClient
 import os
-import requests
 from typing import Optional
 
 
@@ -13,22 +12,20 @@ class SecretsService:
             cls._instance = super(SecretsService, cls).__new__(cls)
             client_id = os.getenv("INFISICAL_CLIENT_ID")
             client_secret = os.getenv("INFISICAL_CLIENT_SECRET")
-
-            if not client_id or not client_secret:
+            project_id = os.getenv("INFISICAL_PROJECT_ID")
+        
+            if not all([client_id, client_secret, project_id]):
                 raise ValueError(
-                    "INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET must be set"
+                    "INFISICAL_CLIENT_ID, INFISICAL_CLIENT_SECRET and INFISICAL_PROJECT_ID must be set"
                 )
 
-            response = requests.post(
-                "https://app.infisical.com/api/v3/auth/oauth/client-credentials",
-                json={"clientId": client_id, "clientSecret": client_secret},
-            )
-
-            if response.status_code != 200:
-                raise Exception("Failed to authenticate with Infisical")
-
-            access_token = response.json()["accessToken"]
-            cls._client = InfisicalClient(token=access_token)
+            try:
+                client = InfisicalSDKClient(host="https://app.infisical.com")
+                client.auth.universal_auth.login(client_id=client_id, client_secret=client_secret)
+                cls._client = client
+                cls._project_id = project_id
+            except Exception as e:
+                raise Exception(f"Failed to authenticate with Infisical: {str(e)}")
 
         return cls._instance
 
@@ -36,7 +33,15 @@ class SecretsService:
         self, secret_name: str, default: Optional[str] = None
     ) -> Optional[str]:
         try:
-            return self._client.get_secret(secret_name).secret_value
+            secrets = self._client.secrets.listSecrets(
+                project_id=self._project_id, 
+                environment_slug="dev", 
+                secret_path="/"
+            )
+            for secret in secrets:
+                if secret.secret_name == secret_name:
+                    return secret.secret_value
+            return default
         except Exception as e:
             print(f"Error fetching secret {secret_name}: {str(e)}")
             return default
