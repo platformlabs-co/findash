@@ -3,7 +3,7 @@ name = "finops-api"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]>=0.112.1",
     "uvicorn[standard]>=0.22.0",
@@ -20,6 +20,7 @@ dependencies = [
     "pre-commit>=2.20.0",
     "flake8>=7.1.1",
     "pytest>=8.3.4",
+    "pydantic>=2.6.1",
 ]
 
 [dependency-groups]
@@ -28,4 +29,5 @@ dev = [
     "pre-commit>=2.20.0",
     "flake8>=7.1.1",
     "pytest>=8.3.4",
+    "pydantic>=2.6.1",
 ]

@@ -50,7 +50,7 @@ def test_client():
     Base.metadata.drop_all(bind=engine)
 
 
-def test_datadog_configuration_flow(test_client):
+def test_datadog_configuration_flow_e2e(test_client):
     # Test data
     config_data = {"app_key": "test-app-key-123", "api_key": "test-api-key-456"}
 
