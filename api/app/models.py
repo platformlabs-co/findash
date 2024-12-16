@@ -15,7 +15,6 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     sub = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, nullable=True)
     api_configurations = relationship(
         "APIConfiguration", back_populates="user", cascade="all, delete-orphan"
     )
