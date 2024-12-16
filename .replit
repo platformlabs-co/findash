@@ -6,12 +6,10 @@ channel = "stable-24_05"
 [[ports]]
 localPort = 3000
 externalPort = 80
-webview = true
 
 [[ports]]
 localPort = 8000
 externalPort = 8000
-webview = false
 
 [workflows]
 runButton = "Run backend"
@@ -23,11 +21,7 @@ author = 3687642
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "uv pip install -r api/pyproject.toml"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd api && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+args = "source api/.venv/bin/activate && cd api && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 [[workflows.workflow]]
 name = "Run frontend"
@@ -41,3 +35,7 @@ args = "cd dashboard && npm install"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd dashboard && npm start"
+
+[deployment]
+build = ["sh", "-c", "cd dashboard && npm run build"]
+deploymentTarget = "cloudrun"
