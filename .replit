@@ -13,6 +13,9 @@ localPort = 8000
 externalPort = 8000
 webview = false
 
+[env]
+PYTHONPATH = "${REPL_HOME}/.local/lib/python3.11/site-packages"
+
 [workflows]
 runButton = "Run backend"
 
