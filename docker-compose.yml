@@ -1,0 +1,65 @@
+services:
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+    env_file: ./dashboard/.env
+
+
+  api:
+    build: ./api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/dbname
+      - PYTHONPATH=/app
+    env_file: ./api/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+    networks:
+      - app-network
+    command: gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --reload --bind 0.0.0.0:8000
+
+  migrations:
+    build: ./api
+    command: python app/migrations/run_all.py
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/dbname
+      - PYTHONPATH=/app
+    volumes:
+      - ./api:/app
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dbname
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d dbname"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

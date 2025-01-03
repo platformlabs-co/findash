@@ -1,0 +1,44 @@
+[project]
+name = "api"
+version = "0.1.0"
+description = "Platform API"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "fastapi==0.115.6",
+    "uvicorn==0.34.0",
+    "sqlalchemy==2.0.36",
+    "psycopg2-binary==2.9.9",
+    "pydantic==1.10.19",
+    "python-jose==3.3.0",
+    "python-multipart==0.0.19",
+    "python-dotenv==1.0.1",
+    "boto3==1.35.81",
+    "infisicalsdk==0.2.0",
+    "authlib==1.3.2",
+    "httpx==0.28.1",
+    "cryptography>=42.0.5",
+    "itsdangerous==2.1.2",
+    "gunicorn>=23.0.0",
+    "types-requests>=2.32.0.20241016",
+    "types-sqlalchemy>=1.4.53.38",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-env==1.1.5",
+    "black==24.2.0",
+    "flake8==7.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+[tool.poetry.dependencies]
+sqlalchemy = "^2.0.0"
