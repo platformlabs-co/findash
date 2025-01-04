@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 # Run migrations
 run_migrations()
 
+
 def setup_app():
     app = FastAPI()
 
