@@ -95,7 +95,7 @@ FinDash consists of two main components:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+See the [LICENSE](LICENSE) file for details.
 
 ## Support
 
