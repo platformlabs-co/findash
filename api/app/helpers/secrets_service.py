@@ -22,7 +22,8 @@ class SecretsService:
 
             if not all([client_id, client_secret, project_id]):
                 raise ValueError(
-                    "INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET, INFISICAL_PROJECT_ID must be set"
+                    """INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET, 
+                    INFISICAL_PROJECT_ID must be set"""
                 )
 
             try:
