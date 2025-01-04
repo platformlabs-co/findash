@@ -1,6 +1,3 @@
-/// <reference types="react" />
-/// <reference types="node" />
-
 import Card from "components/card";
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -24,78 +21,14 @@ interface APIError {
   isConnectionError: boolean;
 }
 
-interface ForecastEntry {
-  month: string;
-  cost: number;
-  best_case: number;
-  worst_case: number;
-}
-
-interface ForecastData {
-  forecast: ForecastEntry[];
-  sums: {
-    total_best_case: number;
-    total_forecast: number;
-    total_worst_case: number;
-  };
-  growth_rates: {
-    best_case: number;
-    trend_based: number;
-    worst_case: number;
-  };
-}
-
 interface VendorMetricsProps {
   vendor: "datadog" | "aws";
   title: string;
-  demo?: boolean;
 }
 
-const generateDemoMetrics = (vendor: "datadog" | "aws"): VendorMetricsData => {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-  const baseAmount = vendor === "datadog" ? 2000 : 15000;
-  
-  return {
-    data: months.map((month, index) => ({
-      month,
-      cost: baseAmount + Math.random() * baseAmount * 0.3 + (index * baseAmount * 0.1)
-    }))
-  };
-};
-
-const generateDemoForecast = (vendor: "datadog" | "aws"): ForecastData => {
-  const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const baseAmount = vendor === "datadog" ? 2000 : 15000;
-  const growthRate = 0.15;
-  
-  const forecast = months.map((month, index) => {
-    const baseCost = baseAmount * (1 + growthRate) ** index;
-    return {
-      month,
-      cost: baseCost,
-      best_case: baseCost * 0.8,
-      worst_case: baseCost * 1.3
-    };
-  });
-
-  return {
-    forecast,
-    sums: {
-      total_best_case: forecast.reduce((sum, item) => sum + item.best_case, 0),
-      total_forecast: forecast.reduce((sum, item) => sum + item.cost, 0),
-      total_worst_case: forecast.reduce((sum, item) => sum + item.worst_case, 0)
-    },
-    growth_rates: {
-      best_case: 12,
-      trend_based: 15,
-      worst_case: 30
-    }
-  };
-};
-
-const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false }) => {
+const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
-  const [forecastData, setForecastData] = useState<ForecastData | null>(null);
+  const [forecastData, setForecastData] = useState<any>(null);
   const [error, setError] = useState<APIError | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<"actual" | "forecast">("actual");
@@ -103,13 +36,6 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
 
   const fetchForecastData = async () => {
     try {
-      if (demo) {
-        setForecastData(generateDemoForecast(vendor));
-        setError(null);
-        setLoading(false);
-        return;
-      }
-
       const response = await CallBackendService(
         `/v1/vendors-forecast/${vendor}`,
         getAccessTokenSilently,
@@ -127,15 +53,15 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
     }
   };
 
+  useEffect(() => {
+    if (activeTab === "forecast") {
+      fetchForecastData();
+    }
+  }, [activeTab]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
-      if (demo) {
-        setMetrics(generateDemoMetrics(vendor));
-        setError(null);
-        return;
-      }
-
       const response = await CallBackendService(
         `/v1/vendors-metrics/${vendor.toLowerCase()}`,
         getAccessTokenSilently,
@@ -154,12 +80,6 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
   };
 
   useEffect(() => {
-    if (activeTab === "forecast") {
-      fetchForecastData();
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
     fetchData();
   }, [vendor, getAccessTokenSilently]);
 
@@ -169,13 +89,13 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
     return [
       {
         name: "Monthly Cost",
-        data: metrics.data.map((entry: MonthlyMetric) => entry.cost),
+        data: metrics.data.map((entry) => entry.cost),
         color: "#4318FF",
       },
     ];
   };
 
-  const getChartOptions = (chartData: MonthlyMetric[]): ApexOptions => {
+  const getChartOptions = (chartData: any): ApexOptions => {
     if (!chartData)
       return {
         chart: { toolbar: { show: false } },
@@ -196,7 +116,7 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
         theme: "dark",
       },
       xaxis: {
-        categories: chartData.map((entry: MonthlyMetric) => entry.month),
+        categories: chartData.map((entry: any) => entry.month),
         labels: {
           show: true,
           style: {
@@ -234,32 +154,6 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
         },
       },
     };
-  };
-
-  const handleExportCSV = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
-      const response = await fetch(
-        `${backendUrl}/v1/vendors-forecast/${vendor}?format=csv`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${vendor}_forecast.csv`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Export failed:", error);
-    }
   };
 
   if (loading) {
@@ -357,7 +251,30 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
             </button>
             {activeTab === "forecast" && (
               <button
-                onClick={handleExportCSV}
+                onClick={async () => {
+                  try {
+                    const token = await getAccessTokenSilently();
+                    const response = await fetch(
+                      `${process.env.REACT_APP_BACKEND_URL}/v1/vendors-forecast/${vendor}?format=csv`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${vendor}_forecast.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                  } catch (error) {
+                    console.error("Export failed:", error);
+                  }
+                }}
                 className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
               >
                 Export CSV
