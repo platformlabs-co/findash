@@ -1,9 +1,9 @@
 import MainDashboard from "views/admin/default";
-import Vendors from "views/admin/vendors";
 import Configuration from "views/admin/configuration";
 import SignIn from "views/auth/SignIn";
-import { MdHome, MdLock, MdSettings, MdHelp } from "react-icons/md";
+import { MdHome, MdLock, MdSettings, MdHelp, MdPreview } from "react-icons/md";
 import Support from "views/admin/support";
+import DemoDashboard from "views/demo/DemoDashboard";
 
 const routes = [
   {
@@ -33,6 +33,13 @@ const routes = [
     path: "support",
     icon: <MdHelp className="h-6 w-6" />,
     component: <Support />,
+  },
+  {
+    name: "Demo",
+    layout: "",
+    path: "demo",
+    icon: <MdPreview className="h-6 w-6" />,
+    component: <DemoDashboard />,
   },
 ];
 export default routes;

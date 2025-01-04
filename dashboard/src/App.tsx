@@ -1,10 +1,10 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "layouts/admin";
 import AuthLayout from "layouts/auth";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoadingState } from "components/loading/LoadingState";
 import { useEffect } from "react";
+import DemoDashboard from "views/demo/DemoDashboard";
 
 const App = () => {
   document.body.classList.add("dark");
@@ -35,6 +35,7 @@ const App = () => {
     <Routes>
       <Route path="auth/*" element={<AuthLayout />} />
       <Route path="admin/*" element={<AdminLayout />} />
+      <Route path="demo" element={<DemoDashboard />} />
       <Route 
         path="/" 
         element={
