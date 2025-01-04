@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { MdDashboard, MdBarChart, MdAttachMoney } from "react-icons/md";
+import { SiDatadog, SiAmazonaws } from "react-icons/si";
 import logoWhite from "assets/img/layout/logoWhite.png";
 
 export default function SignIn() {
@@ -40,14 +41,45 @@ export default function SignIn() {
         />
       </div>
 
+      {/* Supported Integrations */}
+      <div className="mb-8 text-center">
+        <h2 className="mb-4 text-2xl font-bold text-navy-700 dark:text-white">
+          Supported Integrations
+        </h2>
+        <div className="flex justify-center gap-8">
+          <div className="flex items-center gap-2">
+            <SiDatadog className="h-8 w-8 text-brand-500" />
+            <div className="text-left">
+              <p className="font-medium text-navy-700 dark:text-white">Datadog</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Fully Supported</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <SiAmazonaws className="h-8 w-8 text-gray-400" />
+            <div className="text-left">
+              <p className="font-medium text-navy-700 dark:text-white">AWS</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Coming Soon</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Sign In Button and Support Link */}
       <div className="mx-auto w-full max-w-[400px] text-center">
-        <button
-          onClick={() => loginWithRedirect()}
-          className="linear w-full rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
-        >
-          Sign In to Get Started
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={() => loginWithRedirect()}
+            className="linear flex-1 rounded-xl bg-brand-500 py-3 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
+          >
+            Sign In to Get Started
+          </button>
+          <Link
+            to="/demo"
+            className="linear flex-1 rounded-xl bg-indigo-100 py-3 text-base font-medium text-indigo-700 transition duration-200 hover:bg-indigo-200 active:bg-indigo-300 dark:bg-navy-700 dark:text-indigo-400 dark:hover:bg-navy-600"
+          >
+            Try Demo Dashboard
+          </Link>
+        </div>
         <div className="mt-4 flex flex-col items-center justify-center gap-2">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Free and open source. Start optimizing your cloud costs today.
