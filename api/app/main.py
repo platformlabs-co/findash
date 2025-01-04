@@ -6,6 +6,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import vendor_metrics, users, forecast, configuration
 from app.helpers.secrets import Secrets
+from app.migrations.run_all import run_migrations
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +17,8 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 logging.getLogger("sqlalchemy.pool").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-
+# Run migrations
+run_migrations()
 
 def setup_app():
     app = FastAPI()
