@@ -24,11 +24,6 @@ def override_get_db():
         db.close()
 
 
-import pytest
-from unittest.mock import MagicMock, patch
-from app.helpers.secrets import Secrets
-
-
 @pytest.fixture(scope="module", autouse=True)
 def mock_migrations():
     with patch("app.migrations.run_all.run_migrations"):
