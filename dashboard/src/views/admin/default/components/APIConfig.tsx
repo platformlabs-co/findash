@@ -19,13 +19,12 @@ const VENDOR_CONFIGS: VendorConfig[] = [
     type: "datadog",
     component: DatadogConfig,
   },
-  // Hide until tested
-  // {
-  //   id: "aws",
-  //   name: "AWS",
-  //   type: "aws",
-  //   component: AWSConfig,
-  // },
+  {
+    id: "aws",
+    name: "AWS",
+    type: "aws",
+    component: AWSConfig,
+  },
 ];
 
 const APIConfig = () => {

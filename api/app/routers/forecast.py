@@ -5,11 +5,12 @@ import io
 import csv
 from sqlalchemy.orm import Session
 from app.models import User
-from app.models import DatadogAPIConfiguration
+from app.models import DatadogAPIConfiguration, AWSAPIConfiguration
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
 from app.services.forecast_service import ForecastService
 from app.services.datadog_service import DatadogService
+from app.services.aws_service import AWSService
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,43 @@ async def get_vendor_forecast(
             )
 
         vendor_name = vendor_name.lower()
-        if vendor_name != "datadog":
+        if vendor_name == "datadog":
+            datadog_config = (
+                db.query(DatadogAPIConfiguration)
+                .filter(DatadogAPIConfiguration.user_id == user.id)
+                .first()
+            )
+
+            if not datadog_config:
+                return JSONResponse(
+                    status_code=404,
+                    content={
+                        "error": "Configuration not found",
+                        "message": "Datadog API configuration not found for this user",
+                        "code": "CONFIG_NOT_FOUND",
+                    },
+                )
+
+            service = DatadogService(user.id, db)
+        elif vendor_name == "aws":
+            aws_config = (
+                db.query(AWSAPIConfiguration)
+                .filter(AWSAPIConfiguration.user_id == user.id)
+                .first()
+            )
+
+            if not aws_config:
+                return JSONResponse(
+                    status_code=404,
+                    content={
+                        "error": "Configuration not found",
+                        "message": "AWS API configuration not found for this user",
+                        "code": "CONFIG_NOT_FOUND",
+                    },
+                )
+
+            service = AWSService(user.id, db)
+        else:
             return JSONResponse(
                 status_code=400,
                 content={
@@ -45,24 +82,6 @@ async def get_vendor_forecast(
                     "code": "INVALID_VENDOR",
                 },
             )
-
-        datadog_config = (
-            db.query(DatadogAPIConfiguration)
-            .filter(DatadogAPIConfiguration.user_id == user.id)
-            .first()
-        )
-
-        if not datadog_config:
-            return JSONResponse(
-                status_code=404,
-                content={
-                    "error": "Configuration not found",
-                    "message": "Datadog API configuration not found for this user",
-                    "code": "CONFIG_NOT_FOUND",
-                },
-            )
-
-        service = DatadogService(user.id, db)
 
         historical_data = service.get_monthly_costs()
         if isinstance(historical_data, JSONResponse):
