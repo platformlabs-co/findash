@@ -2,16 +2,19 @@ import Card from "components/card";
 import React, { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { CallBackendService } from "utils";
-import { useAPIConfigurations } from "./hooks/useAPIConfigurations";
 
-const AWSConfig = () => {
+interface AWSConfigProps {
+  onConfigured?: () => void;
+  existingConfig?: boolean;
+}
+
+const AWSConfig: React.FC<AWSConfigProps> = ({ onConfigured, existingConfig }) => {
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const { getAccessTokenSilently } = useAuth0();
-  const { refresh: refreshConfigurations } = useAPIConfigurations();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,12 +36,15 @@ const AWSConfig = () => {
         }
       );
 
-      setSuccess("AWS credentials configured successfully!");
+      setSuccess(existingConfig 
+        ? "AWS credentials updated successfully!" 
+        : "AWS credentials configured successfully!");
       setAccessKeyId("");
       setSecretAccessKey("");
       
-      // Refresh the API configurations list
-      await refreshConfigurations();
+      if (onConfigured) {
+        onConfigured();
+      }
     } catch (error: any) {
       setError(error.message || "Failed to configure AWS credentials");
     } finally {
