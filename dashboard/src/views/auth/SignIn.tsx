@@ -126,10 +126,10 @@ export default function SignIn() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <SiAmazonaws className="h-8 w-8 text-gray-400" />
+              <SiAmazonaws className="h-8 w-8 text-brand-400" />
               <div className="text-left">
                 <p className="font-medium text-navy-700 dark:text-white">AWS</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Coming Soon</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Fully Supported</p>
               </div>
             </div>
           </div>
