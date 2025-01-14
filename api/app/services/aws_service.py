@@ -62,10 +62,12 @@ class AWSService:
                     result["TimePeriod"]["Start"], "%Y-%m-%d"
                 ).strftime("%b")
                 cost = float(result["Total"]["UnblendedCost"]["Amount"])
-                cost_data.append({
-                    "month": datetime.strptime(result["TimePeriod"]["Start"], "%Y-%m-%d").strftime("%m-%Y"),
-                    "cost": round(cost, 2)
-                })
+                cost_data.append(
+                    {
+                        "month": month,
+                        "cost": round(cost, 2),
+                    }
+                )
 
             return {"data": cost_data}
 
