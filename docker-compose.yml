@@ -1,6 +1,11 @@
 services:
   dashboard:
-    build: ./dashboard
+    build: 
+      context: ./dashboard
+      args:
+        - NODE_ENV=development
+    environment:
+      - NODE_ENV=development
     ports:
       - "3000:3000"
     volumes:
