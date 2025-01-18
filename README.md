@@ -13,7 +13,7 @@ FinDash is an open-source FinOps dashboard designed to help organizations monito
 ## Supported Integrations
 
 - ✅ **Datadog**: Full support for cost metrics and forecasting
-- 🔜 **AWS**: Coming soon
+- 🔜 **AWS**: Full support for cost metrics and forecasting
 
 ## Getting Started
 
