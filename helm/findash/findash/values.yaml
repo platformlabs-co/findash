@@ -1,0 +1,166 @@
+# Default values for findash.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  imageRegistry: ghcr.io
+  imageRepository: platformlabs-co/findash
+
+api:
+  name: findash-api
+  image:
+    repository: api
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+    port: 8000
+  ingress:
+    enabled: false
+  config:
+    logLevel: "info"
+  env:
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: findash-postgresql
+          key: postgres-url
+    - name: DATADOG_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: findash-secrets
+          key: datadog-api-key
+    - name: DATADOG_APP_KEY
+      valueFrom:
+        secretKeyRef:
+          name: findash-secrets
+          key: datadog-app-key
+
+dashboard:
+  name: findash-dashboard
+  image:
+    repository: dashboard
+    tag: latest
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 300m
+      memory: 384Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: false
+  env:
+    - name: REACT_APP_BACKEND_URL
+      value: "http://findash-api:8000"
+    - name: REACT_APP_AUTH0_DOMAIN
+      valueFrom:
+        secretKeyRef:
+          name: findash-secrets
+          key: auth0-domain
+    - name: REACT_APP_AUTH0_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: findash-secrets
+          key: auth0-client-id
+
+postgresql:
+  enabled: true
+  auth:
+    username: findash
+    database: findash
+    existingSecret: findash-postgresql
+  primary:
+    persistence:
+      size: 8Gi
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: findash.local
+      paths:
+        - path: /api
+          pathType: Prefix
+          service: findash-api
+          port: 8000
+        - path: /
+          pathType: Prefix
+          service: findash-dashboard
+          port: 3000
+  tls: []
+
+secrets:
+  create: true
+  findashSecrets:
+    auth0-domain: ""
+    auth0-client-id: ""
+    datadog-api-key: ""
+    datadog-app-key: ""
+  postgresql:
+    postgres-url: "postgresql://findash:password@findash-postgresql:5432/findash"
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

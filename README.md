@@ -23,8 +23,12 @@ FinDash is an open-source FinOps dashboard designed to help organizations monito
 - npm or yarn
 - Python 3.8+
 - uv (Python package installer)
+- Kubernetes cluster
+- Helm v3
 
 ### Installation
+
+#### Local Development
 
 1. Clone the repository:
 ```bash
@@ -49,6 +53,81 @@ uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -r requirements.txt
 ```
+
+#### Kubernetes Deployment
+
+1. Add the Bitnami repository for PostgreSQL dependency:
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+```
+
+2. Create a values file (`values.yaml`):
+```yaml
+secrets:
+  findashSecrets:
+    auth0-domain: "your-auth0-domain"
+    auth0-client-id: "your-auth0-client-id"
+    datadog-api-key: "your-datadog-api-key"
+    datadog-app-key: "your-datadog-app-key"
+
+ingress:
+  enabled: true
+  className: nginx  # Adjust based on your cluster
+  hosts:
+    - host: findash.your-domain.com
+      paths:
+        - path: /api
+          pathType: Prefix
+          service: findash-api
+          port: 8000
+        - path: /
+          pathType: Prefix
+          service: findash-dashboard
+          port: 3000
+```
+
+3. Install the chart:
+```bash
+# Update dependencies
+helm dependency update ./helm/findash/findash
+
+# Install the chart
+helm install findash ./helm/findash/findash -f values.yaml -n your-namespace
+```
+
+4. Verify the installation:
+```bash
+kubectl get pods -n your-namespace
+kubectl get ingress -n your-namespace
+```
+
+5. Upgrading:
+```bash
+helm upgrade findash ./helm/findash/findash -f values.yaml -n your-namespace
+```
+
+6. Uninstalling:
+```bash
+helm uninstall findash -n your-namespace
+```
+
+### Configuration
+
+The following table lists the configurable parameters for the Helm chart:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `global.imageRegistry` | Global container registry | `ghcr.io` |
+| `api.replicaCount` | Number of API replicas | `1` |
+| `api.resources` | API resource requests/limits | See values.yaml |
+| `dashboard.replicaCount` | Number of dashboard replicas | `1` |
+| `dashboard.resources` | Dashboard resource requests/limits | See values.yaml |
+| `postgresql.enabled` | Enable PostgreSQL deployment | `true` |
+| `ingress.enabled` | Enable ingress creation | `false` |
+| `secrets.create` | Create Kubernetes secrets | `true` |
+
+For a complete list of parameters, see the [values.yaml](helm/findash/findash/values.yaml) file.
 
 4. Set up environment variables:
 ```bash
