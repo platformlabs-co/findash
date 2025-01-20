@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import vendor_metrics, users, forecast, configuration
+from app.routers import vendor_metrics, users, forecast, configuration, budget
 from app.helpers.secrets import Secrets
 from app.migrations.run_all import run_migrations
 
@@ -65,3 +65,4 @@ app.include_router(vendor_metrics.router)
 app.include_router(users.router)
 app.include_router(forecast.router)
 app.include_router(configuration.router)
+app.include_router(budget.router)

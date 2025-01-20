@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, JSON
 from sqlalchemy.orm import relationship, declared_attr
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -18,6 +18,7 @@ class User(Base):
         "DatadogAPIConfiguration", back_populates="user"
     )
     aws_configurations = relationship("AWSAPIConfiguration", back_populates="user")
+    budget_plans = relationship("BudgetPlan", back_populates="user")
 
 
 class APIConfiguration(Base):
@@ -54,3 +55,18 @@ class AWSAPIConfiguration(APIConfiguration):
     aws_secret_access_key = Column(String)
     user = relationship("User", back_populates="aws_configurations")
     __table_args__ = (sqlalchemy.UniqueConstraint("user_id", name="uq_aws_user"),)
+
+
+class BudgetPlan(Base):
+    __tablename__ = "budget_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    vendor = Column(String)  # "datadog" or "aws"
+    type = Column(String, default="default")  # For future use with different plan types
+    budgets = Column(JSON)  # Store monthly budgets as JSON
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationship to User model
+    user = relationship("User", back_populates="budget_plans")

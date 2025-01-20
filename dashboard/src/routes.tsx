@@ -4,6 +4,7 @@ import SignIn from "views/auth/SignIn";
 import { MdHome, MdLock, MdSettings, MdHelp, MdPreview } from "react-icons/md";
 import Support from "views/admin/support";
 import DemoDashboard from "views/demo/DemoDashboard";
+import VendorDetails from "views/admin/vendors/components/VendorDetails";
 
 const routes = [
   {
@@ -40,6 +41,14 @@ const routes = [
     path: "demo",
     icon: <MdPreview className="h-6 w-6" />,
     component: <DemoDashboard />,
+  },
+  {
+    name: "Vendor Details",
+    layout: "/admin",
+    path: "vendors/:vendor",
+    icon: <MdSettings className="h-6 w-6" />,
+    component: <VendorDetails />,
+    hidden: true,
   },
 ];
 export default routes;
