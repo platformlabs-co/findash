@@ -10,7 +10,9 @@ class ConfigurationService:
         self.user = user
         self.secrets = SecretsService()
 
-    def _configure_datadog(self, secrets_data: dict) -> tuple[int, str]:
+    def _configure_datadog(
+        self, secrets_data: dict, identifier: str = "Default Configuration"
+    ) -> tuple[int, str]:
         app_key = self.secrets.create_customer_secret(
             f"user_{self.user.sub}_datadog_app_key",
             secrets_data["DATADOG_APP_KEY"],
@@ -22,13 +24,17 @@ class ConfigurationService:
             "datadog",
         )
         secret = DatadogAPIConfiguration(
-            user_id=self.user.id, app_key=app_key, api_key=api_key
+            user_id=self.user.id,
+            app_key=app_key,
+            api_key=api_key,
+            identifier=identifier,
         )
         # Check if config already exists for this user
         existing_config = (
             self.db.query(DatadogAPIConfiguration)
             .filter(
                 DatadogAPIConfiguration.user_id == self.user.id,
+                DatadogAPIConfiguration.identifier == identifier,
             )
             .first()
         )
@@ -43,7 +49,9 @@ class ConfigurationService:
             self.db.commit()
             return secret.id, "Datadog configuration created successfully"
 
-    def _configure_aws(self, secrets_data: dict) -> tuple[int, str]:
+    def _configure_aws(
+        self, secrets_data: dict, identifier: str = "Default Configuration"
+    ) -> tuple[int, str]:
         access_key = self.secrets.create_customer_secret(
             f"user_{self.user.sub}_aws_access_key",
             secrets_data["AWS_ACCESS_KEY_ID"],
@@ -58,12 +66,14 @@ class ConfigurationService:
             user_id=self.user.id,
             aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
+            identifier=identifier,
         )
         # Check if config already exists for this user
         existing_config = (
             self.db.query(AWSAPIConfiguration)
             .filter(
                 AWSAPIConfiguration.user_id == self.user.id,
+                AWSAPIConfiguration.identifier == identifier,
             )
             .first()
         )
@@ -78,17 +88,22 @@ class ConfigurationService:
             self.db.commit()
             return secret.id, "AWS configuration created successfully"
 
-    def configure_vendor(self, config_type: str, secrets_data: dict) -> tuple[int, str]:
+    def configure_vendor(
+        self,
+        config_type: str,
+        secrets_data: dict,
+        identifier: str = "Default Configuration",
+    ) -> tuple[int, str]:
         """
         Configure a vendor (AWS or Datadog) with the provided secrets.
         Returns (config_id, message)
         """
         try:
             if config_type == "datadog":
-                config_id, message = self._configure_datadog(secrets_data)
+                config_id, message = self._configure_datadog(secrets_data, identifier)
 
             elif config_type == "aws":
-                config_id, message = self._configure_aws(secrets_data)
+                config_id, message = self._configure_aws(secrets_data, identifier)
 
             return config_id, message
 

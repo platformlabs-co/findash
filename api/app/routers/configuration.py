@@ -3,14 +3,27 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models import User, DatadogAPIConfiguration, AWSAPIConfiguration
-from app.routers.models import DatadogAPIConfig, AWSAPIConfig, APIConfigResponse
+from app.routers.models import APIConfigResponse
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
 from app.services.configuration_service import ConfigurationService
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/v1/configuration", tags=["configuration"])
 
 logger = logging.getLogger(__name__)
+
+
+class DatadogConfig(BaseModel):
+    app_key: str
+    api_key: str
+    identifier: str = "Default Configuration"
+
+
+class AWSConfig(BaseModel):
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    identifier: str = "Default Configuration"
 
 
 def get_user(
@@ -24,7 +37,7 @@ def get_user(
 
 @router.post("/datadog")
 async def configure_datadog(
-    config: DatadogAPIConfig,
+    config: DatadogConfig,
     user: User = Depends(get_user),
     db: Session = Depends(get_db),
 ) -> APIConfigResponse:
@@ -35,7 +48,9 @@ async def configure_datadog(
 
     try:
         config_service = ConfigurationService(db, user)
-        config_id, message = config_service.configure_vendor("datadog", secrets_data)
+        config_id, message = config_service.configure_vendor(
+            "datadog", secrets_data, config.identifier
+        )
 
         return APIConfigResponse(id=config_id, type="datadog", message=message)
     except Exception as e:
@@ -47,7 +62,7 @@ async def configure_datadog(
 
 @router.post("/aws")
 async def configure_aws(
-    config: AWSAPIConfig,
+    config: AWSConfig,
     user: User = Depends(get_user),
     db: Session = Depends(get_db),
 ) -> APIConfigResponse:
@@ -58,7 +73,9 @@ async def configure_aws(
 
     config_service = ConfigurationService(db, user)
     try:
-        config_id, message = config_service.configure_vendor("aws", secrets_data)
+        config_id, message = config_service.configure_vendor(
+            "aws", secrets_data, config.identifier
+        )
 
         return APIConfigResponse(id=config_id, type="aws", message=message)
     except Exception as e:
@@ -83,12 +100,26 @@ async def list_api_configurations(
         .all()
     )
 
-    return {
-        "data": [
+    configurations = []
+    for config in datadog_configs:
+        configurations.append(
             {
                 "id": config.id,
-                "type": "aws" if isinstance(config, AWSAPIConfiguration) else "datadog",
+                "type": "datadog",
+                "identifier": config.identifier,
+                "created_at": config.created_at,
+                "updated_at": config.updated_at,
             }
-            for config in (datadog_configs + aws_configs)
-        ]
-    }
+        )
+    for config in aws_configs:
+        configurations.append(
+            {
+                "id": config.id,
+                "type": "aws",
+                "identifier": config.identifier,
+                "created_at": config.created_at,
+                "updated_at": config.updated_at,
+            }
+        )
+
+    return {"data": configurations}

@@ -50,6 +50,7 @@ interface VendorMetricsProps {
   vendor: "datadog" | "aws";
   title: string;
   demo?: boolean;
+  identifier?: string;
 }
 
 const generateDemoMetrics = (vendor: "datadog" | "aws"): VendorMetricsData => {
@@ -106,7 +107,7 @@ const generateDemoForecast = (vendor: "datadog" | "aws"): ForecastData => {
   };
 };
 
-const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false }) => {
+const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false, identifier = "Default Configuration" }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
   const [forecastData, setForecastData] = useState<ForecastData | null>(null);
   const [error, setError] = useState<APIError | null>(null);
@@ -152,7 +153,7 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
       }
 
       const response = await CallBackendService(
-        `/v1/vendors-metrics/${vendor.toLowerCase()}`,
+        `/v1/vendors-metrics/${vendor.toLowerCase()}?identifier=${encodeURIComponent(identifier)}`,
         getAccessTokenSilently,
       );
       setMetrics(response);

@@ -10,20 +10,26 @@ logger = logging.getLogger(__name__)
 
 
 class AWSService:
-    def __init__(self, user_id: int, db: Session):
+    def __init__(
+        self, user_id: int, db: Session, identifier: str = "Default Configuration"
+    ):
         self.user_id = user_id
         self.db = db
+        self.identifier = identifier
         self.secrets = SecretsService()
         self._init_client()
 
     def _init_client(self):
         config = (
             self.db.query(AWSAPIConfiguration)
-            .filter(AWSAPIConfiguration.user_id == self.user_id)
+            .filter(
+                AWSAPIConfiguration.user_id == self.user_id,
+                AWSAPIConfiguration.identifier == self.identifier,
+            )
             .first()
         )
         if not config:
-            raise Exception("AWS configuration not found")
+            raise Exception(f"AWS configuration '{self.identifier}' not found")
 
         access_key = self.secrets.get_customer_secret(config.aws_access_key_id)
         secret_key = self.secrets.get_customer_secret(config.aws_secret_access_key)

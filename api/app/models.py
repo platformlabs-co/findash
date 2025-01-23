@@ -30,6 +30,7 @@ class APIConfiguration(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String)
+    identifier = Column(String, default="Default Configuration")
 
     @declared_attr
     def user_id(cls):
@@ -45,7 +46,11 @@ class DatadogAPIConfiguration(APIConfiguration):
     app_key = Column(String)
     api_key = Column(String)
     user = relationship("User", back_populates="datadog_configurations")
-    __table_args__ = (sqlalchemy.UniqueConstraint("user_id", name="uq_datadog_user"),)
+    __table_args__ = (
+        sqlalchemy.UniqueConstraint(
+            "user_id", "identifier", name="uq_datadog_user_identifier"
+        ),
+    )
 
 
 class AWSAPIConfiguration(APIConfiguration):
@@ -54,7 +59,11 @@ class AWSAPIConfiguration(APIConfiguration):
     aws_access_key_id = Column(String)
     aws_secret_access_key = Column(String)
     user = relationship("User", back_populates="aws_configurations")
-    __table_args__ = (sqlalchemy.UniqueConstraint("user_id", name="uq_aws_user"),)
+    __table_args__ = (
+        sqlalchemy.UniqueConstraint(
+            "user_id", "identifier", name="uq_aws_user_identifier"
+        ),
+    )
 
 
 class BudgetPlan(Base):
