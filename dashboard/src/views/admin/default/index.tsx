@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import VendorMetrics from "./components/VendorMetrics";
 import { useAPIConfigurations } from "./components/hooks/useAPIConfigurations";
+import { LoadingState } from "components/loading/LoadingState";
 
 const Dashboard = () => {
   const { configurations, loading } = useAPIConfigurations();
@@ -11,7 +12,7 @@ const Dashboard = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingState />;
   }
 
   if (configurations.length === 0) {
@@ -35,7 +36,7 @@ const Dashboard = () => {
 
   return (
     <div className="mt-3">
-      <div className="grid grid-cols-1 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {configurations.map((config) => {
           if (config.type === "datadog") {
             return (

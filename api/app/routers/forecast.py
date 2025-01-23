@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse, Response
 import io
 import csv
+import json
 from sqlalchemy.orm import Session
 from app.models import User
 from app.models import DatadogAPIConfiguration, AWSAPIConfiguration
@@ -21,6 +22,7 @@ router = APIRouter(tags=["cloud-cost-forecast"])
 async def get_vendor_forecast(
     vendor_name: str,
     format: str = Query(None, description="Response format (csv or json)"),
+    your_forecast: str = Query(None, description="Your forecast data as JSON string"),
     auth_user: dict = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
@@ -94,25 +96,43 @@ async def get_vendor_forecast(
             output = io.StringIO()
             writer = csv.writer(output)
 
-            # Write headers
+            # Write headers with Your Forecast column
             writer.writerow(
-                ["Month", "Best Case", "Trend-based Forecast", "Worst Case"]
+                [
+                    "Month",
+                    "Best Case",
+                    "Trend-based Forecast",
+                    "Worst Case",
+                    "Your Forecast",
+                ]
             )
 
-            # Write forecast data
-            for entry in forecast_data["forecast_data"]:
-                writer.writerow(
-                    [
-                        entry["month"],
-                        entry["best_case"],
-                        entry["cost"],
-                        entry["worst_case"],
-                    ]
-                )
+            # Parse your_forecast data if provided
+            your_forecast_data = []
+            if your_forecast:
+                try:
+                    your_forecast_data = json.loads(your_forecast)
+                except json.JSONDecodeError:
+                    your_forecast_data = []
+
+            # Write forecast data including Your Forecast
+            for i, entry in enumerate(forecast_data["forecast_data"]):
+                row = [
+                    entry["month"],
+                    entry["best_case"],
+                    entry["cost"],
+                    entry["worst_case"],
+                    # If your_forecast is not provided, use the trend-based forecast
+                    (
+                        your_forecast_data[i]
+                        if your_forecast_data and i < len(your_forecast_data)
+                        else entry["cost"]
+                    ),
+                ]
+                writer.writerow(row)
 
             output.seek(0)
             output_value = output.getvalue()
-            print(output_value)
             response = Response(
                 content=output_value,
                 media_type="text/csv",

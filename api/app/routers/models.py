@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import List
+from datetime import datetime
 
 
 class DatadogAPIConfig(BaseModel):
@@ -21,3 +23,22 @@ class UserProfile(BaseModel):
     email: str | None = None
     name: str | None = None
     picture: str | None = None
+
+
+class BudgetEntry(BaseModel):
+    month: str  # Format: MM-YYYY
+    amount: float
+
+
+class BudgetPlanCreate(BaseModel):
+    vendor: str
+    budgets: List[BudgetEntry]
+
+
+class BudgetPlanResponse(BaseModel):
+    id: int
+    vendor: str
+    type: str
+    budgets: List[BudgetEntry]
+    created_at: datetime
+    updated_at: datetime

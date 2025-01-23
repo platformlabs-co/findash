@@ -60,7 +60,7 @@ class AWSService:
             for result in response["ResultsByTime"]:
                 month = datetime.strptime(
                     result["TimePeriod"]["Start"], "%Y-%m-%d"
-                ).strftime("%b")
+                ).strftime("%m-%Y")
                 cost = float(result["Total"]["UnblendedCost"]["Amount"])
                 cost_data.append(
                     {

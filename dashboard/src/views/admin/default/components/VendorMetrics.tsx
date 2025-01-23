@@ -8,6 +8,7 @@ import { CallBackendService } from "utils";
 import BarChart from "components/charts/BarChart";
 import { ApexOptions } from "apexcharts";
 import { DatadogIcon, AWSIcon } from "../../../../components/icons";
+import { Link } from "react-router-dom";
 
 interface MonthlyMetric {
   month: string;
@@ -52,7 +53,13 @@ interface VendorMetricsProps {
 }
 
 const generateDemoMetrics = (vendor: "datadog" | "aws"): VendorMetricsData => {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  const currentDate = new Date();
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(currentDate.getMonth() - (5 - i));
+    return d.toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' }).replace('/', '-');
+  });
+  
   const baseAmount = vendor === "datadog" ? 2000 : 15000;
   
   return {
@@ -64,7 +71,13 @@ const generateDemoMetrics = (vendor: "datadog" | "aws"): VendorMetricsData => {
 };
 
 const generateDemoForecast = (vendor: "datadog" | "aws"): ForecastData => {
-  const months = ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const currentDate = new Date();
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(currentDate.getMonth() + i + 1);
+    return d.toLocaleDateString('en-US', { month: '2-digit', year: 'numeric' }).replace('/', '-');
+  });
+  
   const baseAmount = vendor === "datadog" ? 2000 : 15000;
   const growthRate = 0.15;
   
@@ -98,15 +111,16 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
   const [forecastData, setForecastData] = useState<ForecastData | null>(null);
   const [error, setError] = useState<APIError | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [forecastLoading, setForecastLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"actual" | "forecast">("actual");
   const { getAccessTokenSilently } = useAuth0();
 
   const fetchForecastData = async () => {
     try {
+      setForecastLoading(true);
       if (demo) {
         setForecastData(generateDemoForecast(vendor));
         setError(null);
-        setLoading(false);
         return;
       }
 
@@ -123,6 +137,7 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
         isConnectionError: error.message?.includes('Failed to fetch') || !error.response
       });
     } finally {
+      setForecastLoading(false);
       setLoading(false);
     }
   };
@@ -363,6 +378,12 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
                 Export CSV
               </button>
             )}
+            <Link
+              to={`/admin/vendors/${vendor}`}
+              className="rounded bg-brand-500 px-4 py-2 text-white hover:bg-brand-600"
+            >
+              Dive Deeper
+            </Link>
           </div>
         </div>
 
@@ -423,17 +444,16 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
 
         {activeTab === "forecast" && (
           <>
-            {loading ? (
+            {forecastLoading ? (
               <div className="flex h-64 items-center justify-center">
-                <p className="text-gray-500">Loading forecast data...</p>
+                <div className="text-center">
+                  <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-solid border-brand-500 border-t-transparent mx-auto"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Loading forecast data...</p>
+                </div>
               </div>
             ) : error ? (
               <div className="flex h-64 items-center justify-center">
                 <p className="text-red-500">{error.message}</p>
-              </div>
-            ) : loading ? (
-              <div className="flex h-64 items-center justify-center">
-                <p className="text-gray-500">Loading forecast data...</p>
               </div>
             ) : forecastData?.forecast &&
               Array.isArray(forecastData.forecast) &&
