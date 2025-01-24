@@ -53,13 +53,22 @@ def upgrade():
                 )
             )
 
-            # Add new unique constraints for user_id + identifier combinations
+            # Add new unique constraints only if they don't exist
             logger.info("Adding new unique constraints for user_id + identifier...")
             conn.execute(
                 text(
                     """
-                    ALTER TABLE datadog_api_configurations
-                    ADD CONSTRAINT uq_datadog_user_identifier UNIQUE (user_id, identifier);
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (
+                            SELECT 1 FROM pg_constraint
+                            WHERE conname = 'uq_datadog_user_identifier'
+                        ) THEN
+                            ALTER TABLE datadog_api_configurations
+                            ADD CONSTRAINT uq_datadog_user_identifier
+                            UNIQUE (user_id, identifier);
+                        END IF;
+                    END $$;
                     """
                 )
             )
@@ -67,15 +76,24 @@ def upgrade():
             conn.execute(
                 text(
                     """
-                    ALTER TABLE aws_api_configurations
-                    ADD CONSTRAINT uq_aws_user_identifier UNIQUE (user_id, identifier);
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (
+                            SELECT 1 FROM pg_constraint
+                            WHERE conname = 'uq_aws_user_identifier'
+                        ) THEN
+                            ALTER TABLE aws_api_configurations
+                            ADD CONSTRAINT uq_aws_user_identifier
+                            UNIQUE (user_id, identifier);
+                        END IF;
+                    END $$;
                     """
                 )
             )
 
             logger.info("Migration completed successfully")
     except Exception as e:
-        logger.error(f"Migration failed: {e}")
+        logger.error(f"Migration failed: {str(e)}")
         raise
 
 

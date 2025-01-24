@@ -5,6 +5,7 @@ import { CallBackendService } from "utils";
 interface APIConfiguration {
   id: number;
   type: string;
+  identifier: string;
 }
 
 export const useAPIConfigurations = () => {

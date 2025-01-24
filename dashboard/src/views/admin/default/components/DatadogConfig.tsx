@@ -11,6 +11,7 @@ interface DatadogConfigProps {
 const DatadogConfig: React.FC<DatadogConfigProps> = ({ onConfigured, existingConfig }) => {
   const [appKey, setAppKey] = useState('');
   const [apiKey, setApiKey] = useState('');
+  const [identifier, setIdentifier] = useState('Default Configuration');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -28,7 +29,11 @@ const DatadogConfig: React.FC<DatadogConfigProps> = ({ onConfigured, existingCon
         getAccessTokenSilently,
         {
           method: 'POST',
-          body: JSON.stringify({ app_key: appKey, api_key: apiKey }),
+          body: JSON.stringify({ 
+            app_key: appKey, 
+            api_key: apiKey,
+            identifier: identifier 
+          }),
           headers: { 'Content-Type': 'application/json' }
         }
       );
@@ -101,6 +106,20 @@ const DatadogConfig: React.FC<DatadogConfigProps> = ({ onConfigured, existingCon
               className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
               placeholder={existingConfig ? "Enter new Datadog API Key" : "Enter Datadog API Key"}
               required={!existingConfig}
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Configuration Name
+            </label>
+            <input
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
+              placeholder="Enter configuration name"
+              required
             />
           </div>
 

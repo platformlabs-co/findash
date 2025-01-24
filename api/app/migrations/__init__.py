@@ -4,6 +4,7 @@ from .create_vendor_configurations_tables import (
     upgrade as create_vendor_configurations_tables,
 )
 from .create_budget_plans_table import upgrade as create_budget_plans_table
+from .add_config_name import upgrade as add_config_name
 
 # List of migrations in order of execution
 MIGRATIONS = [
@@ -11,4 +12,5 @@ MIGRATIONS = [
     create_api_configurations_table,  # Runs after users table exists
     create_vendor_configurations_tables,
     create_budget_plans_table,  # New migration
+    add_config_name,
 ]
