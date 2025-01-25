@@ -11,6 +11,7 @@ interface AWSConfigProps {
 const AWSConfig: React.FC<AWSConfigProps> = ({ onConfigured, existingConfig }) => {
   const [accessKeyId, setAccessKeyId] = useState("");
   const [secretAccessKey, setSecretAccessKey] = useState("");
+  const [identifier, setIdentifier] = useState('Default Configuration');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -31,6 +32,7 @@ const AWSConfig: React.FC<AWSConfigProps> = ({ onConfigured, existingConfig }) =
           body: JSON.stringify({
             aws_access_key_id: accessKeyId,
             aws_secret_access_key: secretAccessKey,
+            identifier: identifier
           }),
           headers: { "Content-Type": "application/json" },
         }
@@ -103,6 +105,20 @@ const AWSConfig: React.FC<AWSConfigProps> = ({ onConfigured, existingConfig }) =
               onChange={(e) => setSecretAccessKey(e.target.value)}
               className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
               placeholder="Enter AWS Secret Access Key"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Configuration Name
+            </label>
+            <input
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
+              placeholder="Enter configuration name"
               required
             />
           </div>

@@ -141,8 +141,27 @@ const VendorDetails: React.FC = () => {
     const [month, year] = forecastMonth.split('-').map(Number);
     const today = new Date();
     const forecastDate = new Date(year, month - 1);
-    return (forecastDate.getFullYear() - today.getFullYear()) * 12 + 
-           (forecastDate.getMonth() - today.getMonth());
+    const monthDiff = (forecastDate.getFullYear() - today.getFullYear()) * 12 + 
+                     (forecastDate.getMonth() - today.getMonth());
+    // Return 0 for current month, positive numbers for future months
+    return Math.max(0, monthDiff);
+  };
+
+  const calculateSimulatedCost = (
+    forecast: ForecastEntry,
+    baseAmount: number,
+    growthRate: number,
+    index: number,
+    forecasts: ForecastEntry[]
+  ): number => {
+    // For the first month (current or future), use baseAmount
+    if (index === 0) {
+      return baseAmount * (1 + (growthRate / 100));
+    }
+
+    // For subsequent months, use the previous month's simulated cost as the base
+    const prevMonthCost: number = calculateSimulatedCost(forecasts[index - 1], baseAmount, growthRate, index - 1, forecasts);
+    return prevMonthCost * (1 + (growthRate / 100));
   };
 
   const handleMoMChange = (value: number) => {
@@ -168,12 +187,16 @@ const VendorDetails: React.FC = () => {
       if (!forecastData) return;
       
       // Update budgets with forecast values
-      const updatedBudgets = forecastData.forecast.map(forecast => {
+      const updatedBudgets = forecastData.forecast.map((forecast, index) => {
         const simulatedCost = state.momGrowth === forecastData.growth_rates.trend_based
           ? forecast.cost
-          : metrics[metrics.length - 1]?.cost * 
-            Math.pow(1 + (state.momGrowth / 100), 
-            getMonthDiff(forecast.month));
+          : calculateSimulatedCost(
+              forecast,
+              metrics[metrics.length - 1]?.cost,
+              state.momGrowth,
+              index,
+              forecastData.forecast
+            );
 
         return {
           month: forecast.month,
@@ -362,12 +385,16 @@ const VendorDetails: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {forecastData?.forecast.map((forecast) => {
+                {forecastData?.forecast.map((forecast, index) => {
                   const simulatedCost = state.momGrowth === forecastData.growth_rates.trend_based
                     ? forecast.cost
-                    : metrics[metrics.length - 1]?.cost * 
-                      Math.pow(1 + (state.momGrowth / 100), 
-                      getMonthDiff(forecast.month));
+                    : calculateSimulatedCost(
+                        forecast,
+                        metrics[metrics.length - 1]?.cost,
+                        state.momGrowth,
+                        index,
+                        forecastData.forecast
+                      );
 
                   return (
                     <tr key={forecast.month} className="border-b border-gray-200">
@@ -425,12 +452,16 @@ const VendorDetails: React.FC = () => {
               <div className="rounded-xl bg-gray-50 p-4 dark:bg-navy-800">
                 <p className="text-sm text-gray-600 dark:text-gray-400">Your Forecast Total</p>
                 <p className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                  ${forecastData.forecast.reduce((total, forecast) => {
+                  ${forecastData.forecast.reduce((total, forecast, index) => {
                     const simulatedCost = state.momGrowth === forecastData.growth_rates.trend_based
                       ? forecast.cost
-                      : metrics[metrics.length - 1]?.cost * 
-                        Math.pow(1 + (state.momGrowth / 100), 
-                        getMonthDiff(forecast.month));
+                      : calculateSimulatedCost(
+                          forecast,
+                          metrics[metrics.length - 1]?.cost,
+                          state.momGrowth,
+                          index,
+                          forecastData.forecast
+                        );
                     return total + simulatedCost;
                   }, 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                   <span className="mt-1 block text-sm text-gray-400">
