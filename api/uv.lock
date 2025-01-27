@@ -51,8 +51,12 @@ dependencies = [
 [distribution.optional-dependencies]
 dev = [
     { name = "black" },
+    { name = "coverage" },
     { name = "flake8" },
+    { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
     { name = "pytest-env" },
 ]
 
@@ -212,6 +216,24 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335 },
+]
+
+[[distribution]]
+name = "coverage"
+version = "7.4.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bf/d5/f809d8b630cf4c11fe490e20037a343d12a74ec2783c6cdb5aee725e7137/coverage-7.4.4.tar.gz", hash = "sha256:c901df83d097649e257e803be22592aedfd5182f07b3cc87d640bbb9afd50f49", size = 783727 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/de/a54b245e781bfd6f3fd7ce5566a695686b5c25ee7c743f514e7634428972/coverage-7.4.4-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:201bef2eea65e0e9c56343115ba3814e896afe6d36ffd37bab783261db430f76", size = 206409 },
+    { url = "https://files.pythonhosted.org/packages/88/92/07f9c593cd27e3c595b8cb83b95adad8c9ba3d611debceed097a5fd6be4b/coverage-7.4.4-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:41c9c5f3de16b903b610d09650e5e27adbfa7f500302718c9ffd1c12cf9d6818", size = 206568 },
+    { url = "https://files.pythonhosted.org/packages/41/6d/e142c823e5d4b24481f990da4cf9d2d577a6f4e1fb6faf39d9a4e42b1d43/coverage-7.4.4-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d898fe162d26929b5960e4e138651f7427048e72c853607f2b200909794ed978", size = 238920 },
+    { url = "https://files.pythonhosted.org/packages/30/1a/105f0139df6a2adbcaa0c110711a46dbd9f59e93a09ca15a97d59c2564f2/coverage-7.4.4-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3ea79bb50e805cd6ac058dfa3b5c8f6c040cb87fe83de10845857f5535d1db70", size = 236288 },
+    { url = "https://files.pythonhosted.org/packages/98/79/185cb42910b6a2b2851980407c8445ac0da0750dff65e420e86f973c8396/coverage-7.4.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ce4b94265ca988c3f8e479e741693d143026632672e3ff924f25fab50518dd51", size = 238223 },
+    { url = "https://files.pythonhosted.org/packages/92/12/2303d1c543a11ea060dbc7144ed3174fc09107b5dd333649415c95ede58b/coverage-7.4.4-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:00838a35b882694afda09f85e469c96367daa3f3f2b097d846a7216993d37f4c", size = 245161 },
+    { url = "https://files.pythonhosted.org/packages/96/5a/7d0e945c4759fe9d19aad1679dd3096aeb4cb9fcf0062fe24554dc4787b8/coverage-7.4.4-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:fdfafb32984684eb03c2d83e1e51f64f0906b11e64482df3c5db936ce3839d48", size = 243066 },
+    { url = "https://files.pythonhosted.org/packages/f4/1b/79cdb7b11bbbd6540a536ac79412904b5c1f8903d5c1330084212afa8ceb/coverage-7.4.4-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:69eb372f7e2ece89f14751fbcbe470295d73ed41ecd37ca36ed2eb47512a6ab9", size = 244805 },
+    { url = "https://files.pythonhosted.org/packages/af/7f/54dc676e7e63549838a3a7b95a8e11df80441bf7d64c6ce8f1cdbc0d1ff0/coverage-7.4.4-cp312-cp312-win32.whl", hash = "sha256:137eb07173141545e07403cca94ab625cc1cc6bc4c1e97b6e3846270e7e1fea0", size = 208590 },
+    { url = "https://files.pythonhosted.org/packages/46/c4/1dfe76d96034a347d717a2392b004d42d45934cb94efa362ad41ca871f6e/coverage-7.4.4-cp312-cp312-win_amd64.whl", hash = "sha256:d71eec7d83298f1af3326ce0ff1d0ea83c7cb98f72b577097f9083b20bdaf05e", size = 209415 },
 ]
 
 [[distribution]]
@@ -431,6 +453,24 @@ wheels = [
 ]
 
 [[distribution]]
+name = "mypy"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mypy-extensions" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/72/1e/a587a862c766a755a58b62d8c00aed11b74a15dc415c1bf5da7b607b0efd/mypy-1.9.0.tar.gz", hash = "sha256:3cc5da0127e6a478cddd906068496a97a7618a21ce9b54bde5bf7e539c7af974", size = 2995901 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6e/96/40f0f605b1d4e2ad1fb11d21988ce3a3e205886c0fcbd35c9789a214de9a/mypy-1.9.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:aceb1db093b04db5cd390821464504111b8ec3e351eb85afd1433490163d60cd", size = 10725390 },
+    { url = "https://files.pythonhosted.org/packages/d7/d2/072e40384b53051106b4fcf03537fb88e2a6ad0757d2ab7f6c8c2f188a69/mypy-1.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0235391f1c6f6ce487b23b9dbd1327b4ec33bb93934aa986efe8a9563d9349e6", size = 9731292 },
+    { url = "https://files.pythonhosted.org/packages/85/a5/b7dc7eb69eda899fd07e71403b51b598a1f4df0f452d1da5844374082bcd/mypy-1.9.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d4d5ddc13421ba3e2e082a6c2d74c2ddb3979c39b582dacd53dd5d9431237185", size = 12455450 },
+    { url = "https://files.pythonhosted.org/packages/1c/1b/3e962a201d2f0f57c9fa1990e0dd6076f4f2f94954ab56e4a701ec3cc070/mypy-1.9.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:190da1ee69b427d7efa8aa0d5e5ccd67a4fb04038c380237a0d96829cb157913", size = 12530368 },
+    { url = "https://files.pythonhosted.org/packages/72/1f/8b214b69d08cc5e4bd8c3769ac55a43318f3529362ea55e5957774b69924/mypy-1.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:fe28657de3bfec596bbeef01cb219833ad9d38dd5393fc649f4b366840baefe6", size = 9319112 },
+    { url = "https://files.pythonhosted.org/packages/60/db/0ba2eaedca52bf5276275e8489951c26206030b3d31bf06f00875ae75d5d/mypy-1.9.0-py3-none-any.whl", hash = "sha256:a260627a570559181a9ea5de61ac6297aa5af202f06fd7ab093ce74e7181e43e", size = 2555887 },
+]
+
+[[distribution]]
 name = "mypy-extensions"
 version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -563,6 +603,31 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/05/35/30e0d83068951d90a01852cb1cef56e5d8a09d20c7f511634cc2f7e0372a/pytest-8.3.4.tar.gz", hash = "sha256:965370d062bce11e73868e0335abac31b4d3de0e82f4007408d242b4f8610761", size = 1445919 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/11/92/76a1c94d3afee238333bc0a42b82935dd8f9cf8ce9e336ff87ee14d9e1cf/pytest-8.3.4-py3-none-any.whl", hash = "sha256:50e16d954148559c9a74109af1eaf0c945ba2d8f30f0a3d3335edde19788b6f6", size = 343083 },
+]
+
+[[distribution]]
+name = "pytest-asyncio"
+version = "0.23.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/61/26/e0d399fc08f1ce8f03fd308334858342a73fb1fc55b74cbbd0b96b3ad5f7/pytest-asyncio-0.23.5.tar.gz", hash = "sha256:3a048872a9c4ba14c3e90cc1aa20cbc2def7d01c7c8db3777ec281ba9c057675", size = 45887 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ce/0c/a60bcaeb3ba2f938b4d76e535180ea9f43e8da5fa6933fd9401f6f6e46ae/pytest_asyncio-0.23.5-py3-none-any.whl", hash = "sha256:4e7093259ba018d58ede7d5315131d21923a60f8a6e9ee266ce1589685c89eac", size = 17595 },
+]
+
+[[distribution]]
+name = "pytest-cov"
+version = "4.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "coverage" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7a/15/da3df99fd551507694a9b01f512a2f6cf1254f33601605843c3775f39460/pytest-cov-4.1.0.tar.gz", hash = "sha256:3904b13dfbfec47f003b8e77fd5b589cd11904a21ddf1ab38a64f204d6a10ef6", size = 63245 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/4b/8b78d126e275efa2379b1c2e09dc52cf70df16fc3b90613ef82531499d73/pytest_cov-4.1.0-py3-none-any.whl", hash = "sha256:6ba70b9e97e69fcc3fb45bfeab2d0a138fb65c4d0d6a41ef33983ad114be8c3a", size = 21949 },
 ]
 
 [[distribution]]
