@@ -11,10 +11,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
+      id-token: write
+      security-events: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -40,7 +48,13 @@ jobs:
       run: |
         flake8
 
-    - name: Run tests
+    - name: Run tests with coverage
       working-directory: ./api
       run: |
-        pytest
+        pytest --cov=app --cov-report=xml:coverage.xml
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # This should work with proper permissions
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

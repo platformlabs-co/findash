@@ -29,6 +29,8 @@ dev = [
     "pytest-env==1.1.5",
     "black==24.2.0",
     "flake8==7.0.0",
+    "pytest-cov==4.1.0",
+    "coverage==7.4.4",
 ]
 
 [build-system]
