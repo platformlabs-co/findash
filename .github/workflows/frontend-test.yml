@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'dashboard/**'
+      - '.github/workflows/frontend-test.yml'
   pull_request:
     branches:
       - main
