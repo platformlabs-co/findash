@@ -79,10 +79,13 @@ jobs:
           path: dashboard/coverage/lcov.info
           retention-days: 1
 
-  sonar:
-    name: SonarCloud Analysis
-    needs: [backend, frontend]
+  sonar-backend:
+    name: SonarCloud Backend Analysis
+    needs: [backend]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - uses: actions/checkout@v2
         with:
@@ -94,6 +97,26 @@ jobs:
           name: backend-coverage
           path: api
 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectBaseDir: api
+
+  sonar-frontend:
+    name: SonarCloud Frontend Analysis
+    needs: [frontend]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./dashboard
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Download frontend coverage
         uses: actions/download-artifact@v3
         with:
@@ -104,4 +127,6 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectBaseDir: dashboard 
