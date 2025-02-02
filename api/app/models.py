@@ -79,3 +79,28 @@ class BudgetPlan(Base):
 
     # Relationship to User model
     user = relationship("User", back_populates="budget_plans")
+
+
+class VendorMetrics(Base):
+    __tablename__ = "vendor_metrics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    vendor = Column(String)  # "datadog" or "aws"
+    identifier = Column(String)  # Configuration identifier
+    month = Column(String)  # Format: MM-YYYY
+    cost = Column(sqlalchemy.Float)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship to User model
+    user = relationship("User", backref="vendor_metrics")
+
+    __table_args__ = (
+        sqlalchemy.UniqueConstraint(
+            "user_id",
+            "vendor",
+            "identifier",
+            "month",
+            name="uq_vendor_metrics_user_vendor_identifier_month",
+        ),
+    )

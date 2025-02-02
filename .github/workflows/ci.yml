@@ -97,13 +97,24 @@ jobs:
           name: backend-coverage
           path: api
 
+      - name: Verify coverage file exists
+        working-directory: ./api
+        run: |
+          ls -la
+          echo "Coverage file contents:"
+          cat coverage.xml
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_VERBOSE: "true"
         with:
           projectBaseDir: api
+          args: >
+            -Dsonar.verbose=true
+            -Dsonar.log.level=DEBUG
 
   sonar-frontend:
     name: SonarCloud Frontend Analysis
@@ -123,10 +134,21 @@ jobs:
           name: frontend-coverage
           path: dashboard/coverage
 
+      - name: Verify coverage file exists
+        working-directory: ./dashboard
+        run: |
+          ls -la coverage/
+          echo "Coverage file contents:"
+          cat coverage/lcov.info
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_VERBOSE: "true"
         with:
-          projectBaseDir: dashboard 
+          projectBaseDir: dashboard
+          args: >
+            -Dsonar.verbose=true
+            -Dsonar.log.level=DEBUG 

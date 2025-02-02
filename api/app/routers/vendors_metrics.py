@@ -1,12 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi.security.api_key import APIKeyHeader
 from sqlalchemy.orm import Session
 from app.models import User
 from app.helpers.database import get_db
 from app.helpers.auth import get_authenticated_user
-from app.services.aws_service import AWSService
-from app.services.datadog_service import DatadogService
+from app.services.vendor_metrics_service import VendorMetricsService
+from app.helpers.secrets_service import SecretsService
 
 router = APIRouter(prefix="/v1/vendors-metrics", tags=["vendors"])
+
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+secrets = SecretsService()
+
+
+async def verify_api_key(api_key: str = Security(api_key_header)):
+    stored_api_key = secrets.get_secret("INTERNAL_API_KEY")
+    if not stored_api_key:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": "API key not configured", "code": "API_KEY_ERROR"},
+        )
+    if api_key != stored_api_key:
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Invalid API key", "code": "INVALID_API_KEY"},
+        )
+    return api_key
 
 
 def get_user(
@@ -26,22 +46,37 @@ async def get_vendor_metrics(
     db: Session = Depends(get_db),
 ):
     try:
-        if vendor.lower() == "datadog":
-            service = DatadogService(user.id, db, identifier=identifier)
-            return await service.get_monthly_costs()
-        elif vendor.lower() == "aws":
-            service = AWSService(user.id, db, identifier=identifier)
-            return await service.get_monthly_costs()
-        else:
-            raise HTTPException(
-                status_code=400,
-                detail={
-                    "message": f"Unsupported vendor: {vendor}",
-                    "code": "INVALID_VENDOR",
-                },
-            )
+        service = VendorMetricsService(user.id, db)
+        return await service.get_and_store_vendor_metrics(vendor, identifier)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": str(e),
+                "code": "INVALID_VENDOR",
+            },
+        )
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail={"message": str(e), "code": "VENDOR_ERROR"},
+        )
+
+
+@router.post("/batch-update")
+async def batch_update_metrics(
+    db: Session = Depends(get_db),
+    api_key: str = Security(verify_api_key),
+):
+    """
+    Update vendor metrics for all users and their configurations.
+    This endpoint is meant to be called by a cron job and requires an API key.
+    """
+    try:
+        results = await VendorMetricsService.batch_update_all_vendor_metrics(db)
+        return {"message": "Batch update completed", "results": results}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"message": str(e), "code": "BATCH_UPDATE_ERROR"},
         )
