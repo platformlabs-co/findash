@@ -107,6 +107,23 @@ const generateDemoForecast = (vendor: "datadog" | "aws"): ForecastData => {
   };
 };
 
+const TrendIndicator: React.FC<{ data: MonthlyMetric[] }> = ({ data }) => {
+  const last3Months = data.slice(-3);
+  const trend = last3Months[2].cost - last3Months[0].cost;
+  const percentage = (trend / last3Months[0].cost) * 100;
+
+  return (
+    <div className="flex items-center space-x-2">
+      <span className={`text-sm ${trend >= 0 ? 'text-red-500' : 'text-green-500'}`}>
+        {trend >= 0 ? '↗' : '↘'} {Math.abs(percentage).toFixed(1)}%
+      </span>
+      <span className="text-sm text-gray-500">
+        Last 3 months trend
+      </span>
+    </div>
+  );
+};
+
 const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false, identifier }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
   const [forecastData, setForecastData] = useState<ForecastData | null>(null);
@@ -190,66 +207,38 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
     ];
   };
 
-  const getChartOptions = (chartData: MonthlyMetric[]): ApexOptions => {
-    if (!chartData)
-      return {
-        chart: { toolbar: { show: false } },
-        xaxis: { categories: [] as string[] },
-        yaxis: { show: true },
-      };
-    return {
-      chart: {
-        toolbar: {
-          show: false,
-        },
-      },
-      tooltip: {
-        style: {
-          fontSize: "12px",
-          fontFamily: undefined as unknown as string,
-        },
-        theme: "dark",
-      },
-      xaxis: {
-        categories: chartData.map((entry: MonthlyMetric) => entry.month),
-        labels: {
-          show: true,
-          style: {
-            colors: "#A3AED0",
-            fontSize: "14px",
-            fontWeight: "500",
-          },
-        },
-      },
-      yaxis: {
-        show: true,
-        labels: {
-          show: true,
-          style: {
-            colors: "#A3AED0",
-            fontSize: "14px",
-            fontWeight: "500",
-          },
-          formatter: function (value: number) {
-            return "$" + value.toFixed(2);
-          },
-        },
-      },
-      fill: {
-        type: "solid",
-        colors: ["#4318FF"],
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 3,
-          columnWidth: "40px",
-        },
-      },
-    };
-  };
+  const getChartOptions = (data: MonthlyMetric[]): ApexOptions => ({
+    chart: { toolbar: { show: false } },
+    xaxis: { categories: data.map((entry: MonthlyMetric) => entry.month), labels: { show: true, style: { colors: "#A3AED0", fontSize: "14px", fontWeight: "500" } } },
+    yaxis: { show: true, labels: { show: true, style: { colors: "#A3AED0", fontSize: "14px", fontWeight: "500" }, formatter: (value: number) => `$${value.toLocaleString()}` } },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        type: 'vertical',
+        shadeIntensity: 0.5,
+        opacityFrom: 0.8,
+        opacityTo: 0.2,
+      }
+    },
+    dataLabels: { enabled: false },
+    plotOptions: { bar: { borderRadius: 3, columnWidth: "40px" } },
+    annotations: {
+      yaxis: [{
+        y: data.reduce((sum, item) => sum + item.cost, 0) / data.length,
+        borderColor: '#FEB019',
+        label: {
+          text: 'Average Cost',
+          style: { color: '#fff' }
+        }
+      }]
+    },
+    tooltip: {
+      theme: 'dark',
+      y: {
+        formatter: (value) => `$${value.toLocaleString()}`
+      }
+    }
+  });
 
   const handleExportCSV = async () => {
     try {
@@ -275,6 +264,81 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
     } catch (error) {
       console.error("Export failed:", error);
     }
+  };
+
+  const SummaryMetrics: React.FC<{ data: MonthlyMetric[] }> = ({ data }) => {
+    const currentMonth = data[data.length - 1];
+    const previousMonth = data[data.length - 2];
+    const monthlyChange = ((currentMonth.cost - previousMonth.cost) / previousMonth.cost) * 100;
+    const totalSpend = data.reduce((sum, item) => sum + item.cost, 0);
+
+    return (
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="bg-navy-700 rounded-xl p-4">
+          <p className="text-sm text-gray-400">Current Month</p>
+          <p className="text-2xl font-bold text-white">
+            ${currentMonth.cost.toLocaleString()}
+          </p>
+        </div>
+        <div className="bg-navy-700 rounded-xl p-4">
+          <p className="text-sm text-gray-400">Monthly Change</p>
+          <p className={`text-2xl font-bold ${monthlyChange >= 0 ? 'text-red-500' : 'text-green-500'}`}>
+            {monthlyChange >= 0 ? '+' : ''}{monthlyChange.toFixed(1)}%
+          </p>
+        </div>
+        <div className="bg-navy-700 rounded-xl p-4">
+          <p className="text-sm text-gray-400">Total (12 months)</p>
+          <p className="text-2xl font-bold text-white">
+            ${totalSpend.toLocaleString()}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const CostBreakdownTable: React.FC<{ data: MonthlyMetric[] }> = ({ data }) => {
+    const sortedData = [...data].sort((a, b) => b.cost - a.cost);
+    const average = data.reduce((sum, item) => sum + item.cost, 0) / data.length;
+
+    return (
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-4">Cost Analysis</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h4 className="text-sm text-gray-500 mb-2">Highest Cost Months</h4>
+            <div className="space-y-2">
+              {sortedData.slice(0, 3).map(item => (
+                <div key={item.month} className="flex justify-between">
+                  <span>{item.month}</span>
+                  <span className="font-semibold">${item.cost.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="text-sm text-gray-500 mb-2">Cost Statistics</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Average</span>
+                <span className="font-semibold">${average.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Min Cost</span>
+                <span className="font-semibold">
+                  ${Math.min(...data.map(d => d.cost)).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Max Cost</span>
+                <span className="font-semibold">
+                  ${Math.max(...data.map(d => d.cost)).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -399,14 +463,15 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
               </div>
             ) : metrics?.data && metrics.data.length > 0 ? (
               <>
+                <SummaryMetrics data={metrics.data} />
                 <div className="h-[300px] w-full">
-                  {metrics.data && Array.isArray(metrics.data) && (
-                    <BarChart
-                      chartData={getBarChartData()}
-                      chartOptions={getChartOptions(metrics.data)}
-                    />
-                  )}
+                  <BarChart
+                    chartData={getBarChartData()}
+                    chartOptions={getChartOptions(metrics.data)}
+                  />
                 </div>
+                <TrendIndicator data={metrics.data} />
+                <CostBreakdownTable data={metrics.data} />
                 <div className="mt-6 overflow-x-auto">
                   <table className="w-full">
                     <thead>
