@@ -1,43 +1,67 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    ForeignKey,
-    DateTime,
-    Float,
-    UniqueConstraint,
-)
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+import logging
+from sqlalchemy import text
+from app.helpers.database import engine
 
-Base = declarative_base()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-class VendorMetrics(Base):
-    __tablename__ = "vendor_metrics"
+def upgrade():
+    logger.info("Starting migration: Creating vendor metrics table")
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    vendor = Column(String)
-    identifier = Column(String)
-    month = Column(String)
-    cost = Column(Float)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    try:
+        with engine.begin() as conn:
+            logger.info("Creating vendor_metrics table...")
+            conn.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS vendor_metrics (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER REFERENCES users(id),
+                        vendor VARCHAR NOT NULL,
+                        identifier VARCHAR NOT NULL,
+                        month VARCHAR NOT NULL,
+                        cost FLOAT NOT NULL,
+                        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                        CONSTRAINT uq_vendor_metrics_user_vendor_identifier_month 
+                            UNIQUE (user_id, vendor, identifier, month)
+                    )
+                    """
+                )
+            )
 
-    __table_args__ = (
-        UniqueConstraint(
-            "user_id",
-            "vendor",
-            "identifier",
-            "month",
-            name="uq_vendor_metrics_user_vendor_identifier_month",
-        ),
-    )
+            # Create indexes
+            conn.execute(
+                text(
+                    """
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_user_id 
+                    ON vendor_metrics(user_id);
+                    
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_vendor 
+                    ON vendor_metrics(vendor);
+                    
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_month 
+                    ON vendor_metrics(month);
+                    """
+                )
+            )
+
+            logger.info("Vendor metrics table created successfully")
+    except Exception as e:
+        logger.error(f"Migration failed: {str(e)}")
+        raise
 
 
-def upgrade(engine):
-    Base.metadata.create_all(bind=engine, tables=[VendorMetrics.__table__])
+def downgrade():
+    logger.info("Starting downgrade: Dropping vendor metrics table")
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DROP TABLE IF EXISTS vendor_metrics"))
+            logger.info("Vendor metrics table dropped successfully")
+    except Exception as e:
+        logger.error(f"Downgrade failed: {str(e)}")
+        raise
 
 
-def downgrade(engine):
-    VendorMetrics.__table__.drop(engine)
+if __name__ == "__main__":
+    upgrade()
