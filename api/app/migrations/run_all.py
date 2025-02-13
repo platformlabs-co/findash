@@ -44,4 +44,8 @@ def run_migrations():
 
 
 if __name__ == "__main__":
-    run_migrations()
+    if wait_for_db():
+        run_migrations()
+    else:
+        logger.error("Could not connect to database")
+        exit(1)
