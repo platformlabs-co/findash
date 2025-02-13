@@ -22,13 +22,13 @@ const Dashboard = () => {
           Welcome to FinDash 🚀
         </h1>
         <p className="mt-4 text-gray-600 dark:text-gray-400">
-          To get started, you'll need to configure your integrations.
+          To get started, you'll need to configure some accounts.
         </p>
         <Link
           to="/admin/configuration"
           className="mt-6 rounded-xl bg-brand-500 px-6 py-3 text-white hover:bg-brand-600"
         >
-          Configure Vendors
+          let's get to it!
         </Link>
       </div>
     );

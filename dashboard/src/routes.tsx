@@ -15,9 +15,9 @@ const routes = [
     component: <MainDashboard />,
   },
   {
-    name: "Configuration",
+    name: "Linked Accounts",
     layout: "/admin", 
-    path: "configuration",
+    path: "linked-accounts",
     icon: <MdSettings className="h-6 w-6" />,
     component: <Configuration />,
   },

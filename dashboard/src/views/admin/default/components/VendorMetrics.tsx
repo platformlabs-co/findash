@@ -383,7 +383,7 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
               to={`/admin/vendors/${vendor}`}
               className="rounded bg-brand-500 px-4 py-2 text-white hover:bg-brand-600"
             >
-              Dive Deeper
+              Details
             </Link>
           </div>
         </div>

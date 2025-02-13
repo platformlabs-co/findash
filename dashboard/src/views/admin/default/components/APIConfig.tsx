@@ -52,21 +52,21 @@ const APIConfig = () => {
         <div className="flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-bold text-navy-700 dark:text-white">
-              API Configurations
+              Linked Accounts
             </h2>
             <div className="relative">
               <button
                 onClick={() => setShowConfigModal(true)}
                 className="rounded bg-brand-500 px-4 py-2 text-sm text-white hover:bg-brand-600"
               >
-                Add Configuration
+                Add Account
               </button>
             </div>
           </div>
 
           {loading ? (
             <div className="text-center py-4 text-gray-500">
-              Loading configurations...
+              Loading linked accounts...
             </div>
           ) : error ? (
             <div className="text-center py-4 text-red-500">
@@ -74,12 +74,12 @@ const APIConfig = () => {
             </div>
           ) : configurations.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500 mb-4">No configurations found</p>
+              <p className="text-gray-500 mb-4">No linked accounts found</p>
               <button
                 onClick={() => setShowConfigModal(true)}
                 className="rounded bg-brand-500 px-4 py-2 text-sm text-white hover:bg-brand-600"
               >
-                Add Your First Configuration
+                Add Your First Linked Account
               </button>
             </div>
           ) : (
@@ -88,7 +88,7 @@ const APIConfig = () => {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="p-2 text-left">Vendor</th>
-                    <th className="p-2 text-left">Configuration Name</th>
+                    <th className="p-2 text-left">Identifier</th>
                     <th className="p-2 text-right">Actions</th>
                   </tr>
                 </thead>
