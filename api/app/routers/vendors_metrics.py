@@ -72,6 +72,11 @@ async def batch_update_metrics(
     Update vendor metrics for all users and their configurations.
     This endpoint is meant to be called by a cron job and requires an API key.
     """
+    if not api_key:
+        raise HTTPException(
+            status_code=403,
+            detail={"message": "Invalid API key", "code": "INVALID_API_KEY"},
+        )
     try:
         results = await VendorMetricsService.batch_update_all_vendor_metrics(db)
         return {"message": "Batch update completed", "results": results}

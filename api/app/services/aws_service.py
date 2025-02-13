@@ -44,15 +44,22 @@ class AWSService:
             region_name="us-east-1",  # Cost Explorer is available in us-east-1
         )
 
-    def get_monthly_costs(self):
+    def get_monthly_costs(self, start_date: str | None = None, end_date: str | None = None):
+        """
+        Get monthly costs from AWS Cost Explorer
+        start_date and end_date format: YYYY-MM
+        """
         try:
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=365)  # Last 12 months
+            # Convert end_date
+            end_date_dt = datetime.now() if not end_date else datetime.strptime(f"{end_date}-01", "%Y-%m-%d")
+            
+            # Convert start_date
+            start_date_dt = (end_date_dt - timedelta(days=365)) if not start_date else datetime.strptime(f"{start_date}-01", "%Y-%m-%d")
 
             response = self.client.get_cost_and_usage(
                 TimePeriod={
-                    "Start": start_date.strftime("%Y-%m-%d"),
-                    "End": end_date.strftime("%Y-%m-%d"),
+                    "Start": start_date_dt.strftime("%Y-%m-%d"),
+                    "End": end_date_dt.strftime("%Y-%m-%d"),
                 },
                 Granularity="MONTHLY",
                 Metrics=["UnblendedCost"],

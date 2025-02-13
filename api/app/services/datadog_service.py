@@ -25,10 +25,16 @@ class DatadogService:
         self.api_key = secrets.get_customer_secret(config.api_key)
         self.base_url = "https://api.datadoghq.com/api/v1"
 
-    def get_monthly_costs(self) -> Dict[str, Any]:
-        now = datetime.utcnow()
-        start_date = (now - timedelta(days=365)).strftime("%Y-%m")
-        end_date = now.strftime("%Y-%m")
+    def get_monthly_costs(self, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
+        """
+        Get monthly costs from Datadog API
+        start_date and end_date format: YYYY-MM
+        """
+        if not start_date:
+            now = datetime.utcnow()
+            start_date = (now - timedelta(days=365)).strftime("%Y-%m")
+        if not end_date:
+            end_date = datetime.utcnow().strftime("%Y-%m")
 
         headers = {
             "DD-API-KEY": self.api_key,

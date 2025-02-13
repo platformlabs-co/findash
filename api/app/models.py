@@ -91,6 +91,7 @@ class VendorMetrics(Base):
     month = Column(String)  # Format: MM-YYYY
     cost = Column(sqlalchemy.Float)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationship to User model
     user = relationship("User", backref="vendor_metrics")
