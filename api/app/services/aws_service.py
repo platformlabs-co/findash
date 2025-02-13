@@ -22,14 +22,12 @@ class AWSService:
     def _init_client(self):
         config = (
             self.db.query(AWSAPIConfiguration)
-            .filter(
-                AWSAPIConfiguration.user_id == self.user_id,
-                AWSAPIConfiguration.identifier == self.identifier,
-            )
+            .filter(AWSAPIConfiguration.user_id == self.user_id)
             .first()
         )
+        
         if not config:
-            raise Exception(f"AWS configuration '{self.identifier}' not found")
+            raise Exception("No AWS configuration found for this user")
 
         access_key = self.secrets.get_customer_secret(config.aws_access_key_id)
         secret_key = self.secrets.get_customer_secret(config.aws_secret_access_key)
@@ -37,9 +35,7 @@ class AWSService:
         if not access_key or not secret_key:
             raise Exception("AWS credentials not found")
 
-        logger.info(
-            f"AWS credentials found for user {self.user_id} {access_key} {secret_key}"
-        )
+        logger.info(f"AWS credentials found for user {self.user_id}")
 
         self.client = boto3.client(
             "ce",  # Cost Explorer service
