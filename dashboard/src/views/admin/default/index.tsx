@@ -42,6 +42,7 @@ const Dashboard = () => {
             return (
               <VendorMetrics
                 key={config.id}
+                identifier={config.identifier}
                 vendor="datadog"
                 title="Datadog Metrics"
               />
@@ -51,6 +52,7 @@ const Dashboard = () => {
             return (
               <VendorMetrics
                 key={config.id}
+                identifier={config.identifier}
                 vendor="aws"
                 title="AWS Metrics"
               />

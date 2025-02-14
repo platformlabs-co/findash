@@ -107,7 +107,7 @@ const generateDemoForecast = (vendor: "datadog" | "aws"): ForecastData => {
   };
 };
 
-const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false, identifier = "Default Configuration" }) => {
+const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = false, identifier }) => {
   const [metrics, setMetrics] = useState<VendorMetricsData | null>(null);
   const [forecastData, setForecastData] = useState<ForecastData | null>(null);
   const [error, setError] = useState<APIError | null>(null);

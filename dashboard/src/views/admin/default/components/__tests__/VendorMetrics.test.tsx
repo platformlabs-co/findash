@@ -43,6 +43,7 @@ describe('VendorMetrics', () => {
     renderWithRouter(
       <VendorMetrics
         vendor="aws"
+        identifier="Default Configuration"
         title="AWS Costs"
         demo={true}
       />
@@ -55,6 +56,7 @@ describe('VendorMetrics', () => {
     renderWithRouter(
       <VendorMetrics
         vendor="aws"
+        identifier="Default Configuration"
         title="AWS Costs"
         demo={true}
       />
