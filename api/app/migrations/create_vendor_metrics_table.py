@@ -23,7 +23,7 @@ def upgrade():
                         month VARCHAR NOT NULL,
                         cost FLOAT NOT NULL,
                         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                        CONSTRAINT uq_vendor_metrics_user_vendor_identifier_month 
+                        CONSTRAINT uq_vendor_metrics_user_vendor_identifier_month
                             UNIQUE (user_id, vendor, identifier, month)
                     )
                     """
@@ -34,13 +34,11 @@ def upgrade():
             conn.execute(
                 text(
                     """
-                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_user_id 
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_user_id
                     ON vendor_metrics(user_id);
-                    
-                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_vendor 
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_vendor
                     ON vendor_metrics(vendor);
-                    
-                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_month 
+                    CREATE INDEX IF NOT EXISTS idx_vendor_metrics_month
                     ON vendor_metrics(month);
                     """
                 )

@@ -5,9 +5,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any
 from app.helpers.secrets_service import SecretsService
 from sqlalchemy.orm import Session
-
 import requests
-from fastapi.responses import JSONResponse
 from app.models import DatadogAPIConfiguration
 
 logger = logging.getLogger(__name__)
@@ -25,7 +23,9 @@ class DatadogService:
         self.api_key = secrets.get_customer_secret(config.api_key)
         self.base_url = "https://api.datadoghq.com/api/v1"
 
-    def get_monthly_costs(self, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
+    def get_monthly_costs(
+        self, start_date: str = None, end_date: str = None
+    ) -> Dict[str, Any]:
         """
         Get monthly costs from Datadog API
         start_date and end_date format: MM-YYYY
@@ -34,7 +34,7 @@ class DatadogService:
             # Handle end_date
             if end_date:
                 # Convert MM-YYYY to YYYY-MM
-                month, year = end_date.split('-')
+                month, year = end_date.split("-")
                 end_date = f"{year}-{month}"
             else:
                 end_date = datetime.utcnow().strftime("%Y-%m")
@@ -42,7 +42,7 @@ class DatadogService:
             # Handle start_date
             if start_date:
                 # Convert MM-YYYY to YYYY-MM
-                month, year = start_date.split('-')
+                month, year = start_date.split("-")
                 start_date = f"{year}-{month}"
             else:
                 # Default to 1 year ago
@@ -71,7 +71,9 @@ class DatadogService:
                         )
                         monthly_costs.append(
                             {
-                                "month": date.strftime("%m-%Y"),  # Convert back to MM-YYYY for consistency
+                                "month": date.strftime(
+                                    "%m-%Y"
+                                ),  # Convert back to MM-YYYY for consistency
                                 "cost": round(
                                     float(entry["attributes"]["total_cost"]), 2
                                 ),
@@ -79,7 +81,11 @@ class DatadogService:
                         )
                 return {"data": monthly_costs}
             else:
-                error_msg = response.json() if response.content else "No error details available"
+                error_msg = (
+                    response.json()
+                    if response.content
+                    else "No error details available"
+                )
                 logger.error(f"Datadog API error: {error_msg}")
                 raise Exception(f"Failed to retrieve Datadog costs: {error_msg}")
 

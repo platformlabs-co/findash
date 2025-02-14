@@ -3,7 +3,7 @@ from sqlalchemy import and_
 from app.models import VendorMetrics, User, DatadogAPIConfiguration, AWSAPIConfiguration
 from app.services.aws_service import AWSService
 from app.services.datadog_service import DatadogService
-from typing import List, Dict, Any
+from typing import List, Dict
 from datetime import datetime, timedelta
 import logging
 
@@ -103,7 +103,7 @@ class VendorMetricsService:
             # Calculate date range for last 12 months
             end_date = datetime.now()
             start_date = end_date - timedelta(days=365)
-            
+
             # Find missing months
             existing_months = {metric.month for metric in stored_metrics}
             required_months = set()
@@ -111,39 +111,47 @@ class VendorMetricsService:
             while current_date <= end_date:
                 month_str = current_date.strftime("%m-%Y")
                 required_months.add(month_str)
-                current_date = (current_date.replace(day=1) + timedelta(days=32)).replace(day=1)
+                current_date = (
+                    current_date.replace(day=1) + timedelta(days=32)
+                ).replace(day=1)
 
             missing_months = required_months - existing_months
-            
+
             # Check if current month's data needs refresh
             current_month = end_date.strftime("%m-%Y")
             current_month_metric = next(
                 (m for m in stored_metrics if m.month == current_month), None
             )
-            
+
             if current_month_metric and (
                 datetime.utcnow() - current_month_metric.updated_at
             ) > timedelta(days=1):
                 # If current month data is older than 1 day, add it to missing months
                 missing_months.add(current_month)
-            
+
             if missing_months:
                 # Get costs for missing months
-                earliest_missing = min(missing_months, key=lambda x: datetime.strptime(x, "%m-%Y"))
-                latest_missing = max(missing_months, key=lambda x: datetime.strptime(x, "%m-%Y"))
-                
+                earliest_missing = min(
+                    missing_months, key=lambda x: datetime.strptime(x, "%m-%Y")
+                )
+                latest_missing = max(
+                    missing_months, key=lambda x: datetime.strptime(x, "%m-%Y")
+                )
+
                 # If current month needs refresh, also get previous month to ensure complete data
                 if current_month in missing_months:
                     earliest_date = datetime.strptime(earliest_missing, "%m-%Y")
-                    earliest_missing = (earliest_date - timedelta(days=32)).strftime("%m-%Y")
-                
+                    earliest_missing = (earliest_date - timedelta(days=32)).strftime(
+                        "%m-%Y"
+                    )
+
                 costs = await self._get_vendor_costs(
-                    vendor, 
+                    vendor,
                     identifier,
                     start_date=earliest_missing,
-                    end_date=latest_missing
+                    end_date=latest_missing,
                 )
-                
+
                 # Store new metrics
                 self._store_metrics(vendor, identifier, costs["data"])
 
@@ -174,7 +182,11 @@ class VendorMetricsService:
             raise Exception(f"Failed to get and store {vendor} metrics: {str(e)}")
 
     async def _get_vendor_costs(
-        self, vendor: str, identifier: str, start_date: str | None = None, end_date: str | None = None
+        self,
+        vendor: str,
+        identifier: str,
+        start_date: str | None = None,
+        end_date: str | None = None,
     ):
         """Get costs from the appropriate vendor service"""
         if vendor.lower() == "datadog":

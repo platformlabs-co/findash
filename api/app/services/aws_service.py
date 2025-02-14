@@ -25,7 +25,7 @@ class AWSService:
             .filter(AWSAPIConfiguration.user_id == self.user_id)
             .first()
         )
-        
+
         if not config:
             raise Exception("No AWS configuration found for this user")
 
@@ -44,7 +44,9 @@ class AWSService:
             region_name="us-east-1",  # Cost Explorer is available in us-east-1
         )
 
-    def get_monthly_costs(self, start_date: str | None = None, end_date: str | None = None):
+    def get_monthly_costs(
+        self, start_date: str | None = None, end_date: str | None = None
+    ):
         """
         Get monthly costs from AWS Cost Explorer
         start_date and end_date format: YYYY-MM
@@ -53,15 +55,15 @@ class AWSService:
             # Convert end_date
             if end_date:
                 # Convert MM-YYYY to YYYY-MM-01
-                month, year = end_date.split('-')
+                month, year = end_date.split("-")
                 end_date_dt = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
             else:
                 end_date_dt = datetime.now()
-            
+
             # Convert start_date
             if start_date:
                 # Convert MM-YYYY to YYYY-MM-01
-                month, year = start_date.split('-')
+                month, year = start_date.split("-")
                 start_date_dt = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
             else:
                 start_date_dt = end_date_dt - timedelta(days=365)
