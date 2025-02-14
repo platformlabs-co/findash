@@ -51,10 +51,20 @@ class AWSService:
         """
         try:
             # Convert end_date
-            end_date_dt = datetime.now() if not end_date else datetime.strptime(f"{end_date}-01", "%Y-%m-%d")
+            if end_date:
+                # Convert MM-YYYY to YYYY-MM-01
+                month, year = end_date.split('-')
+                end_date_dt = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
+            else:
+                end_date_dt = datetime.now()
             
             # Convert start_date
-            start_date_dt = (end_date_dt - timedelta(days=365)) if not start_date else datetime.strptime(f"{start_date}-01", "%Y-%m-%d")
+            if start_date:
+                # Convert MM-YYYY to YYYY-MM-01
+                month, year = start_date.split('-')
+                start_date_dt = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
+            else:
+                start_date_dt = end_date_dt - timedelta(days=365)
 
             response = self.client.get_cost_and_usage(
                 TimePeriod={

@@ -28,20 +28,31 @@ class DatadogService:
     def get_monthly_costs(self, start_date: str = None, end_date: str = None) -> Dict[str, Any]:
         """
         Get monthly costs from Datadog API
-        start_date and end_date format: YYYY-MM
+        start_date and end_date format: MM-YYYY
         """
-        if not start_date:
-            now = datetime.utcnow()
-            start_date = (now - timedelta(days=365)).strftime("%Y-%m")
-        if not end_date:
-            end_date = datetime.utcnow().strftime("%Y-%m")
-
-        headers = {
-            "DD-API-KEY": self.api_key,
-            "DD-APPLICATION-KEY": self.app_key,
-        }
-
         try:
+            # Handle end_date
+            if end_date:
+                # Convert MM-YYYY to YYYY-MM
+                month, year = end_date.split('-')
+                end_date = f"{year}-{month}"
+            else:
+                end_date = datetime.utcnow().strftime("%Y-%m")
+
+            # Handle start_date
+            if start_date:
+                # Convert MM-YYYY to YYYY-MM
+                month, year = start_date.split('-')
+                start_date = f"{year}-{month}"
+            else:
+                # Default to 1 year ago
+                start_date = (datetime.utcnow() - timedelta(days=365)).strftime("%Y-%m")
+
+            headers = {
+                "DD-API-KEY": self.api_key,
+                "DD-APPLICATION-KEY": self.app_key,
+            }
+
             response = requests.get(
                 "https://api.datadoghq.com/api/v2/usage/historical_cost",
                 headers=headers,
@@ -60,23 +71,18 @@ class DatadogService:
                         )
                         monthly_costs.append(
                             {
-                                "month": date.strftime("%m-%Y"),
+                                "month": date.strftime("%m-%Y"),  # Convert back to MM-YYYY for consistency
                                 "cost": round(
                                     float(entry["attributes"]["total_cost"]), 2
                                 ),
                             }
                         )
                 return {"data": monthly_costs}
+            else:
+                error_msg = response.json() if response.content else "No error details available"
+                logger.error(f"Datadog API error: {error_msg}")
+                raise Exception(f"Failed to retrieve Datadog costs: {error_msg}")
 
-            if response.status_code == 403:
-                logger.error("Datadog API authorization failed")
-                raise Exception("Datadog API authorization failed")
-
-            logger.error(
-                f"Datadog API request failed with status {response.status_code}"
-            )
-            raise Exception(f"Failed to retrieve Datadog costs: {response.text}")
-
-        except requests.RequestException as e:
-            logger.error(f"Request failed: {str(e)}")
+        except Exception as e:
+            logger.error(f"Error fetching Datadog costs: {str(e)}")
             raise Exception(f"Failed to retrieve Datadog costs: {str(e)}")
