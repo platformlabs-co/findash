@@ -70,34 +70,13 @@ class DatadogService:
 
             if response.status_code == 403:
                 logger.error("Datadog API authorization failed")
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "error": "Authorization failed",
-                        "message": "Invalid API key or application key",
-                        "details": response.text,
-                    },
-                )
+                raise Exception("Datadog API authorization failed")
 
             logger.error(
                 f"Datadog API request failed with status {response.status_code}"
             )
-            return JSONResponse(
-                status_code=response.status_code,
-                content={
-                    "error": "Failed to fetch Datadog metrics",
-                    "message": response.text,
-                    "status": response.status_code,
-                },
-            )
+            raise Exception(f"Failed to retrieve Datadog costs: {response.text}")
 
         except requests.RequestException as e:
             logger.error(f"Request failed: {str(e)}")
-            return JSONResponse(
-                status_code=500,
-                content={
-                    "error": "Request failed",
-                    "message": str(e),
-                    "type": type(e).__name__,
-                },
-            )
+            raise Exception(f"Failed to retrieve Datadog costs: {str(e)}")
