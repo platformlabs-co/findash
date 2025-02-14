@@ -100,7 +100,7 @@ class VendorMetricsService:
                 .all()
             )
 
-            # Calculate date range for last 12 months
+            # Calculate date range for last 11 months
             end_date = datetime.now()
             start_date = end_date - timedelta(days=365)
 
@@ -141,9 +141,11 @@ class VendorMetricsService:
                 # If current month needs refresh, also get previous month to ensure complete data
                 if current_month in missing_months:
                     earliest_date = datetime.strptime(earliest_missing, "%m-%Y")
-                    earliest_missing = (earliest_date - timedelta(days=32)).strftime(
-                        "%m-%Y"
-                    )
+                    
+                    if (earliest_date - start_date).days > 0:
+                        earliest_missing = (earliest_date - timedelta(days=32)).strftime("%m-%Y")
+                    else:
+                        earliest_missing = earliest_date.strftime("%m-%Y")
 
                 costs = self._get_vendor_costs(
                     vendor,
