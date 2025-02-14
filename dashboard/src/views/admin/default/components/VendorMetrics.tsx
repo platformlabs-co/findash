@@ -126,7 +126,7 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
       }
 
       const response = await CallBackendService(
-        `/v1/vendors-forecast/${vendor}`,
+        `/v1/vendors-forecast/${vendor}?identifier=${encodeURIComponent(identifier)}`,
         getAccessTokenSilently,
       );
       setForecastData(response);
@@ -139,7 +139,6 @@ const VendorMetrics: React.FC<VendorMetricsProps> = ({ vendor, title, demo = fal
       });
     } finally {
       setForecastLoading(false);
-      setLoading(false);
     }
   };
 

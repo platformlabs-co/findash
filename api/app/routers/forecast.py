@@ -23,6 +23,7 @@ async def get_vendor_forecast(
     vendor_name: str,
     format: str = Query(None, description="Response format (csv or json)"),
     your_forecast: str = Query(None, description="Your forecast data as JSON string"),
+    identifier: str = Query("Default Configuration", description="Configuration identifier"),
     auth_user: dict = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):
@@ -43,6 +44,7 @@ async def get_vendor_forecast(
             datadog_config = (
                 db.query(DatadogAPIConfiguration)
                 .filter(DatadogAPIConfiguration.user_id == user.id)
+                .filter(DatadogAPIConfiguration.identifier == identifier)
                 .first()
             )
 
@@ -51,16 +53,17 @@ async def get_vendor_forecast(
                     status_code=404,
                     content={
                         "error": "Configuration not found",
-                        "message": "Datadog API configuration not found for this user",
+                        "message": f"Datadog API configuration not found for this user with identifier {identifier}",
                         "code": "CONFIG_NOT_FOUND",
                     },
                 )
 
-            service = DatadogService(user.id, db)
+            service = DatadogService(user.id, db, identifier)
         elif vendor_name == "aws":
             aws_config = (
                 db.query(AWSAPIConfiguration)
                 .filter(AWSAPIConfiguration.user_id == user.id)
+                .filter(AWSAPIConfiguration.identifier == identifier)
                 .first()
             )
 
@@ -69,12 +72,12 @@ async def get_vendor_forecast(
                     status_code=404,
                     content={
                         "error": "Configuration not found",
-                        "message": "AWS API configuration not found for this user",
+                        "message": f"AWS API configuration not found for this user with identifier {identifier}",
                         "code": "CONFIG_NOT_FOUND",
                     },
                 )
 
-            service = AWSService(user.id, db)
+            service = AWSService(user.id, db, identifier)
         else:
             return JSONResponse(
                 status_code=400,
