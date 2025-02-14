@@ -69,6 +69,7 @@ class AWSService:
             else:
                 start_date_dt = end_date_dt - timedelta(days=365)
 
+            logger.info(f"Fetching AWS costs for {start_date_dt} to {end_date_dt}")
             response = self.client.get_cost_and_usage(
                 TimePeriod={
                     "Start": start_date_dt.strftime("%Y-%m-%d"),
