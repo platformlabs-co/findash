@@ -145,7 +145,7 @@ class VendorMetricsService:
                         "%m-%Y"
                     )
 
-                costs = await self._get_vendor_costs(
+                costs = self._get_vendor_costs(
                     vendor,
                     identifier,
                     start_date=earliest_missing,
@@ -181,7 +181,7 @@ class VendorMetricsService:
         except Exception as e:
             raise Exception(f"Failed to get and store {vendor} metrics: {str(e)}")
 
-    async def _get_vendor_costs(
+    def _get_vendor_costs(
         self,
         vendor: str,
         identifier: str,
@@ -190,11 +190,11 @@ class VendorMetricsService:
     ):
         """Get costs from the appropriate vendor service"""
         if vendor.lower() == "datadog":
-            service = DatadogService(self.user_id, self.db)
-            return await service.get_monthly_costs(start_date, end_date)
+            service = DatadogService(self.user_id, self.db, identifier)
+            return service.get_monthly_costs(start_date, end_date)
         elif vendor.lower() == "aws":
-            service = AWSService(self.user_id, self.db)
-            return await service.get_monthly_costs(start_date, end_date)
+            service = AWSService(self.user_id, self.db, identifier)
+            return service.get_monthly_costs(start_date, end_date)
         else:
             raise ValueError(f"Unsupported vendor: {vendor}")
 

@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 class DatadogService:
-    def __init__(self, user_id: int, db: Session):
+    def __init__(self, user_id: int, db: Session, identifier: str = "Default Configuration"):
         config = (
             db.query(DatadogAPIConfiguration)
             .filter(DatadogAPIConfiguration.user_id == user_id)
+            .filter(DatadogAPIConfiguration.identifier == identifier)
             .first()
         )
         secrets = SecretsService()
@@ -24,7 +25,7 @@ class DatadogService:
         self.base_url = "https://api.datadoghq.com/api/v1"
 
     def get_monthly_costs(
-        self, start_date: str = None, end_date: str = None
+        self, start_date: str | None = None, end_date: str | None = None
     ) -> Dict[str, Any]:
         """
         Get monthly costs from Datadog API

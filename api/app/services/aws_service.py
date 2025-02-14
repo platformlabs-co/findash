@@ -23,6 +23,7 @@ class AWSService:
         config = (
             self.db.query(AWSAPIConfiguration)
             .filter(AWSAPIConfiguration.user_id == self.user_id)
+            .filter(AWSAPIConfiguration.identifier == self.identifier)
             .first()
         )
 
