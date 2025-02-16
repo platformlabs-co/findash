@@ -124,8 +124,8 @@ const APIConfig = () => {
           isOpen={showConfigModal}
           onClose={handleCloseModal}
           title={selectedVendor ? 
-            `${configurations.some(c => c.type === selectedVendor.type) ? "Update" : "Add"} ${selectedVendor.name} Configuration` :
-            "Add New Configuration"
+            `${configurations.some(c => c.type === selectedVendor.type) ? "Update" : "Add"} ${selectedVendor.name} Account` :
+            "Add New Account"
           }
         >
           {selectedVendor ? (
