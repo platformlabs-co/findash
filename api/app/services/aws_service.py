@@ -28,7 +28,9 @@ class AWSService:
         )
 
         if not config:
-            raise Exception(f"No AWS configuration found for this user with identifier {self.identifier}")
+            raise Exception(
+                f"No AWS configuration found for this user with identifier {self.identifier}"
+            )
 
         access_key = self.secrets.get_customer_secret(config.aws_access_key_id)
         secret_key = self.secrets.get_customer_secret(config.aws_secret_access_key)

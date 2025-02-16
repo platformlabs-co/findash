@@ -141,9 +141,11 @@ class VendorMetricsService:
                 # If current month needs refresh, also get previous month to ensure complete data
                 if current_month in missing_months:
                     earliest_date = datetime.strptime(earliest_missing, "%m-%Y")
-                    
+
                     if (earliest_date - start_date).days > 0:
-                        earliest_missing = (earliest_date - timedelta(days=32)).strftime("%m-%Y")
+                        earliest_missing = (
+                            earliest_date - timedelta(days=32)
+                        ).strftime("%m-%Y")
                     else:
                         earliest_missing = earliest_date.strftime("%m-%Y")
 
@@ -174,7 +176,8 @@ class VendorMetricsService:
             return {
                 "data": [
                     {"month": metric.month, "cost": float(metric.cost)}
-                    for metric in all_metrics if metric.year > datetime.now().year - 2
+                    for metric in all_metrics
+                    if metric.year > datetime.now().year - 2
                 ]
             }
 

@@ -23,7 +23,9 @@ async def get_vendor_forecast(
     vendor_name: str,
     format: str = Query(None, description="Response format (csv or json)"),
     your_forecast: str = Query(None, description="Your forecast data as JSON string"),
-    identifier: str = Query("Default Configuration", description="Configuration identifier"),
+    identifier: str = Query(
+        "Default Configuration", description="Configuration identifier"
+    ),
     auth_user: dict = Depends(get_authenticated_user),
     db: Session = Depends(get_db),
 ):

@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class DatadogService:
-    def __init__(self, user_id: int, db: Session, identifier: str = "Default Configuration"):
+    def __init__(
+        self, user_id: int, db: Session, identifier: str = "Default Configuration"
+    ):
         config = (
             db.query(DatadogAPIConfiguration)
             .filter(DatadogAPIConfiguration.user_id == user_id)
