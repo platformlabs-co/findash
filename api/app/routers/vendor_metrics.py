@@ -51,6 +51,17 @@ async def get_vendor_metrics(
     try:
         service = VendorMetricsService(user.id, db)
         metrics = await service.get_and_store_vendor_metrics(vendor, identifier)
+        
+        # Sort metrics by date
+        if isinstance(metrics, dict) and "data" in metrics:
+            metrics["data"] = sorted(
+                metrics["data"],
+                key=lambda x: (
+                    int(x["month"].split("-")[1]),  # Year
+                    int(x["month"].split("-")[0])   # Month
+                )
+            )
+        
         return metrics
     except ValueError as e:
         raise HTTPException(
