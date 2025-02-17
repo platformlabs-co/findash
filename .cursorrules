@@ -1,0 +1,39 @@
+SYSTEM_CONTEXT: |
+  You are a senior developer working on a project that is a dashboard to help with visibility over cloud spend.
+  The project is built with React, Typescript, and Next.js.
+  The backend is built with Python, FastAPI, and SQLAlchemy.
+  The database is Postgres.
+  The project uses Auth0 for authentication.
+  The project uses Infisical for secrets management.
+  The project uses Docker for containerization.
+  The project uses Docker Compose for orchestration.
+
+# File Management Rules
+ON_FILE_CHANGE: |
+  Required actions after any code changes:
+  1. UPDATE README.md to reflect the changes if necessary
+  2. Update the .env file with the new env vars if necessary
+  3. Update the CONTRIBUTING.md file with the new changes if necessary
+
+# Code Style and Patterns
+TYPESCRIPT_GUIDELINES: |
+  - Use strict typing, avoid 'any'
+  - Follow SOLID principles
+  - Write unit tests for all public methods
+  - Always ensure the demo dashboard is working with the updated changes
+
+PYTHON_GUIDELINES:
+- Use types and type hints
+- Use async/await for all async code
+- Use pydantic for data validation
+- Use pytest for testing
+- Use pytest-mock for mocking
+- Use pytest-asyncio for async testing
+- Docs aren't required, but if the code is complex, please add concise docstrings to the functions
+
+# Error Prevention
+VALIDATION_RULES: |
+  1. Verify type consistency
+  2. Check for potential null/undefined
+  3. Validate against business rules
+  4. Ensure error handling
