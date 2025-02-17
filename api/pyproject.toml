@@ -21,8 +21,7 @@ dependencies = [
     "gunicorn>=23.0.0",
     "types-requests>=2.32.0.20241016",
     "types-sqlalchemy>=1.4.53.38",
-    "python-json-logger>=2.0.0",
-    "types-python-json-logger>=2.0.0",
+    "python-json-logger==2.0.7",
 ]
 
 [project.optional-dependencies]
