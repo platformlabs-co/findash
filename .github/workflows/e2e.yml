@@ -1,0 +1,101 @@
+name: E2E Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: findash_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # Setup Python for backend
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    # Setup Node for frontend
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    # Install and configure backend
+    - name: Install backend dependencies
+      working-directory: ./api
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Setup backend environment
+      working-directory: ./api
+      run: |
+        echo "DB_CONNECTION=postgresql://postgres:postgres@localhost:5432/findash_test" >> .env
+        echo "AUTH0_DOMAIN=platformlabs.us.auth0.com" >> .env
+        echo "AUTH0_AUDIENCE=https://findash.cloudbudget.ai" >> .env
+        echo "ENVIRONMENT=test" >> .env
+
+    # Start backend server
+    - name: Start backend server
+      working-directory: ./api
+      run: |
+        python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        sleep 5  # Give the server time to start
+
+    # Install and setup frontend
+    - name: Install frontend dependencies
+      run: |
+        npm ci
+        npm install -D @playwright/test
+
+    # Install Playwright browsers
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+
+    # Setup frontend environment
+    - name: Setup frontend environment
+      run: |
+        echo "REACT_APP_BACKEND_URL=http://localhost:8000" >> .env
+        echo "REACT_APP_AUTH0_DOMAIN=platformlabs.us.auth0.com" >> .env
+        echo "REACT_APP_AUTH0_CLIENT_ID=mlUVKKqaYLc0QBITyOXT1ev0a1D5v72l" >> .env
+        echo "REACT_APP_AUTH0_AUDIENCE=https://findash.cloudbudget.ai" >> .env
+
+    # Run Playwright tests
+    - name: Run Playwright tests
+      run: npm run test:e2e
+
+    # Upload test results
+    - uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+
+    # Optional: Add test results to PR comments
+    - name: Publish Test Results
+      if: always()
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      with:
+        files: "playwright-report/*.xml" 
