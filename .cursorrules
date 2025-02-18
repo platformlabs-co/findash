@@ -1,0 +1,102 @@
+# FinDash - Open Source FinOps Dashboard cursor rules
+
+agents:
+  api:
+    pattern: "api/**/*.py"
+    expertise: |
+      Expert in Python, FastAPI, SQLAlchemy, and database development.
+      Focuses on API endpoints, database migrations, cloud integrations,
+      and implementing cost analysis algorithms.
+
+  frontend:
+    pattern: "dashboard/src/**/*.[tj]sx?"
+    expertise: |
+      Expert in TypeScript, React, TailwindCSS, and frontend development.
+      Specializes in UI components, state management, and data visualization.
+
+  devops:
+    pattern: 
+      - "helm/**/*"
+      - "docker-compose.yml"
+      - "**/Dockerfile"
+      - ".github/**/*"
+    expertise: |
+      Expert in Kubernetes, Helm, Docker, and CI/CD.
+      Focuses on infrastructure, deployment, and scaling.
+
+  security:
+    pattern:
+      - "api/app/helpers/auth.py"
+      - "api/app/helpers/secrets*.py"
+      - "dashboard/src/**/auth/**/*"
+    expertise: |
+      Expert in security, Auth0, API security, and secret management.
+      Ensures secure authentication flows and proper access control.
+
+  testing:
+    pattern:
+      - "api/app/tests/**/*"
+      - "dashboard/src/**/*.test.[tj]sx?"
+    expertise: |
+      Expert in testing frameworks including pytest, Jest, and React Testing Library.
+      Ensures comprehensive test coverage and quality.
+
+reviews:
+  - name: "API Changes"
+    files: ["api/**/*.py"]
+    expertise: |
+      Review API implementation details, ensuring:
+      - Proper FastAPI usage and REST principles
+      - Efficient database queries and models
+      - Error handling and logging
+      - Security best practices
+      - API documentation
+
+  - name: "Frontend Changes"
+    files: ["dashboard/src/**/*.[tj]sx?"]
+    expertise: |
+      Review frontend implementation, ensuring:
+      - React best practices and patterns
+      - TypeScript type safety
+      - Component reusability
+      - Performance optimization
+      - UI/UX consistency
+
+  - name: "Infrastructure Changes"
+    files: 
+      - "helm/**/*"
+      - "docker-compose.yml"
+      - "**/Dockerfile"
+      - ".github/**/*"
+    expertise: |
+      Review infrastructure changes, ensuring:
+      - Kubernetes/Helm best practices
+      - Container security and efficiency
+      - CI/CD pipeline reliability
+      - Resource management
+      - Scaling considerations
+
+  - name: "Security Changes"
+    files:
+      - "api/app/helpers/auth.py"
+      - "api/app/helpers/secrets*.py"
+      - "dashboard/src/**/auth/**/*"
+    expertise: |
+      Review security implementations, ensuring:
+      - Authentication best practices
+      - Secure secret management
+      - Access control implementation
+      - Security vulnerability prevention
+      - Compliance requirements
+
+  - name: "Test Changes"
+    files:
+      - "api/app/tests/**/*"
+      - "dashboard/src/**/*.test.[tj]sx?"
+    expertise: |
+      Review test implementations, ensuring:
+      - Test coverage and quality
+      - Testing best practices
+      - Proper mocking and fixtures
+      - Integration test reliability
+      - Performance test accuracy 
