@@ -177,7 +177,8 @@ class VendorMetricsService:
                 "data": [
                     {"month": metric.month, "cost": float(metric.cost)}
                     for metric in all_metrics
-                    if datetime.strptime(metric.month, "%m-%Y").year > datetime.now().year - 2
+                    if datetime.strptime(metric.month, "%m-%Y").year
+                    > datetime.now().year - 2
                 ]
             }
 
