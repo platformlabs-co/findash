@@ -55,7 +55,10 @@ async def get_vendor_forecast(
                     status_code=404,
                     content={
                         "error": "Configuration not found",
-                        "message": f"Datadog API configuration not found for this user with identifier {identifier}",
+                        "message": (
+                            "Datadog API configuration not found "
+                            f"for this user with identifier {identifier}"
+                        ),
                         "code": "CONFIG_NOT_FOUND",
                     },
                 )
@@ -74,7 +77,10 @@ async def get_vendor_forecast(
                     status_code=404,
                     content={
                         "error": "Configuration not found",
-                        "message": f"AWS API configuration not found for this user with identifier {identifier}",
+                        "message": (
+                            "AWS API configuration not found "
+                            f"for this user with identifier {identifier}"
+                        ),
                         "code": "CONFIG_NOT_FOUND",
                     },
                 )
