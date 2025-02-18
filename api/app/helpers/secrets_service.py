@@ -20,6 +20,12 @@ class SecretsService:
             client_secret = config.InfisicalClientSecret
             project_id = config.InfisicalProjectId
 
+            # In development mode, use dummy values
+            if cls._env == "dev":
+                cls._client = None
+                cls._project_id = "dev"
+                return cls._instance
+
             if not all([client_id, client_secret, project_id]):
                 raise ValueError(
                     """INFISICAL_CLIENT_ID and INFISICAL_CLIENT_SECRET,
@@ -41,6 +47,10 @@ class SecretsService:
     def get_secret(
         self, secret_name: str, default: Optional[str] = None, secret_path: str = "/"
     ) -> Optional[str]:
+        # In development mode, return dummy values
+        if self._env == "dev":
+            return "dummy_value"
+
         try:
             secret = self._client.secrets.get_secret_by_name(
                 secret_name=secret_name,
@@ -60,6 +70,10 @@ class SecretsService:
         Create or update a customer secret in Infisical.
         If secret_value is a dict, it will be stored as JSON.
         """
+        # In development mode, just return the secret name
+        if self._env == "dev":
+            return secret_name
+
         if isinstance(secret_value, dict):
             secret_value = json.dumps(secret_value)
 
