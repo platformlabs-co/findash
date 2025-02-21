@@ -7,10 +7,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import vendor_metrics, users, forecast, configuration, budget
 from app.helpers.secrets import Secrets
 from app.migrations.run_all import run_migrations
+from pythonjsonlogger import jsonlogger
 
 import logging
 
-logging.basicConfig(level=logging.INFO)
+# Configure JSON logging
+logger = logging.getLogger()
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter(
+    fmt="%(asctime)s %(levelname)s %(name)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
+)
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
 
 # Reduce SQLAlchemy logging verbosity
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)

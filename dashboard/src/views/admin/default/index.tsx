@@ -25,7 +25,7 @@ const Dashboard = () => {
           To get started, you'll need to configure some accounts.
         </p>
         <Link
-          to="/admin/configuration"
+          to="/admin/linked-accounts"
           className="mt-6 rounded-xl bg-brand-500 px-6 py-3 text-white hover:bg-brand-600"
         >
           let's get to it!
