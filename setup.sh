@@ -18,7 +18,7 @@ source api/.venv/bin/activate
 
 # Install Python development dependencies
 echo "Installing Python development dependencies..."
-pip install black flake8 pre-commit
+pip install black flake8 pre-commit uv
 
 # Install pre-commit hooks
 echo "Installing pre-commit hooks..."
