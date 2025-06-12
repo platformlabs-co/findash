@@ -32,7 +32,7 @@ FinDash is an open-source FinOps dashboard designed to help organizations monito
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/findash.git
+git clone https://github.com/platformlabs-co/findash.git
 cd findash
 ```
 
@@ -130,14 +130,9 @@ The following table lists the configurable parameters for the Helm chart:
 For a complete list of parameters, see the [values.yaml](helm/findash/findash/values.yaml) file.
 
 4. Set up environment variables:
-```bash
-# In /api/.env
-DATADOG_API_KEY=your_datadog_api_key
-DATADOG_APP_KEY=your_datadog_app_key
 
-# In /dashboard/.env
-REACT_APP_BACKEND_URL=http://localhost:8000
-```
+For the api, check the [api/.env.example](api/.env.example) file.
+For the dashboard, check the [dashboard/.env.example](dashboard/.env.example) file.
 
 5. Start the development servers:
 ```bash
